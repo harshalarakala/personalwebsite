@@ -1,26 +1,51 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useContext } from 'react';
+import NavBar from './components/NavBar';
+import { SectionProvider, AppContext } from './context/AppContext';
+import Overview from './components/Overview';
+import Projects from './components/Projects';
+import Skills from './components/Skills';
+import Contact from './components/Contact';
 
-function App() {
+const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <SectionProvider>
+      <div className="App font-nunito">
+        <header className="App-header">
+          <NavBar />
+        </header>
+        <main>
+          <SectionRenderer />
+        </main>
+      </div>
+    </SectionProvider>
   );
-}
+};
+
+const SectionRenderer: React.FC = () => {
+  const context = useContext(AppContext);
+
+  if (!context) {
+    throw new Error('SectionRenderer must be used within a SectionProvider');
+  }
+
+  const { state } = context;
+
+  const renderSection = () => {
+    switch (state.currentSection) {
+      case 'overview':
+        return <Overview />;
+      case 'projects':
+        return <Projects />;
+      case 'skills':
+        return <Skills />;
+      case 'contact':
+        return <Contact />;
+      default:
+        return <Overview />;
+    }
+  };
+
+  return renderSection();
+};
 
 export default App;
