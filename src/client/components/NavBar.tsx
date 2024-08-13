@@ -2,24 +2,24 @@ import React, { useContext } from 'react';
 import { AppContext } from '../context/AppContext';
 
 const NavBar: React.FC = () => {
-  const context = useContext(AppContext);
+    const context = useContext(AppContext);
 
-  if (!context) {
-    throw new Error('NavBar must be used within a SectionProvider');
-  }
+    if (!context) {
+        throw new Error('NavBar must be used within a SectionProvider');
+    }
 
-  const { state, dispatch } = context;
+    const { state, dispatch } = context;
 
-const getTabClass = (section: string) => {
+    const getTabClass = (section: string) => {
     return `content-center text-center h-full cursor-pointer transition-transform transition-duration-500 ease-in-out w-[250px] ${
         state.currentSection === section
-            ? 'text-4xl font-bold transform scale-125'
+            ? 'text-4xl font-bold transform scale-125 text-red-500'
             : 'text-xl'
     }${state.currentSection !== section ? ' hover:underline hover:text-red-500' : ''}`;
 };
 
   return (
-    <nav className="flex justify-center items-center h-16">
+    <nav className="flex justify-center items-center h-16 backdrop-blur-lg bg-white">
       <div className="flex justify-between align-middle">
         <span
           className={`${getTabClass('overview')} min-h-[50px] leading-[1.5]`}
