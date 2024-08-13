@@ -20,13 +20,29 @@ const Contact: React.FC = () => {
 
   useEffect(() => {
     const icons = document.querySelectorAll('.falling-img');
-    icons.forEach(icon => {
-      const randomPosition = Math.random();
-      const randomDuration = Math.random();
-      (icon as HTMLElement).style.setProperty('--random-position', randomPosition.toString());
-      (icon as HTMLElement).style.setProperty('--random-duration', randomDuration.toString());
+  
+    icons.forEach((icon) => {
+      const updateRandomValues = () => {
+        const randomPosition = Math.random();
+        const randomDuration = Math.random();
+        (icon as HTMLElement).style.setProperty('--random-position', randomPosition.toString());
+        (icon as HTMLElement).style.setProperty('--random-duration', randomDuration.toString());
+      };
+  
+      // Add event listener to rerandomize after each animation ends
+      icon.addEventListener('animationend', updateRandomValues);
+  
+      // Initialize the random values for the first fall
+      updateRandomValues();
     });
-  }, []);
+  
+    return () => {
+      // Clean up the event listeners
+      icons.forEach((icon) => {
+        icon.removeEventListener('animationend', () => {});
+      });
+    };
+  }, []);  
 
   const handleSendText = () => {
     const phoneNumber = '571-778-9224';
