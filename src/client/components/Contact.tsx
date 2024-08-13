@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import emailjs from 'emailjs-com';
 import { ToastContainer, toast } from 'react-toastify';
+import Modal from 'react-modal';
 import 'react-toastify/dist/ReactToastify.css';
 import '../css/FallingAnimation.css';
 import phone from '../images/phone.png';
@@ -15,6 +16,7 @@ const Contact: React.FC = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
   useEffect(() => {
     const icons = document.querySelectorAll('.falling-img');
@@ -25,6 +27,60 @@ const Contact: React.FC = () => {
       (icon as HTMLElement).style.setProperty('--random-duration', randomDuration.toString());
     });
   }, []);
+
+  const handleSendText = () => {
+    const phoneNumber = '571-778-9224';
+
+    // Detect the user's OS
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    const isMac = userAgent.includes('mac');
+    const isWindows = userAgent.includes('win');
+
+    if (isMac) {
+      setModalIsOpen(true); // Open modal for macOS users
+    } else if (isWindows) {
+      // Copy the phone number to the clipboard for Windows users
+      navigator.clipboard.writeText(phoneNumber)
+        .then(() => {
+          toast.success('Phone number copied to clipboard!');
+        })
+        .catch((error) => {
+          console.error('Failed to copy phone number:', error);
+          toast.error('Failed to copy phone number.');
+        });
+    } else {
+      // Fallback: Copy the phone number to the clipboard for other systems
+      navigator.clipboard.writeText(phoneNumber)
+        .then(() => {
+          toast.success('Phone number copied to clipboard!');
+        })
+        .catch((error) => {
+          console.error('Failed to copy phone number:', error);
+          toast.error('Failed to copy phone number.');
+        });
+    }
+  };
+
+  const handleCopyToClipboard = () => {
+    const phoneNumber = '571-778-9224';
+    navigator.clipboard.writeText(phoneNumber)
+      .then(() => {
+        toast.success('Phone number copied to clipboard!');
+      })
+      .catch((error) => {
+        console.error('Failed to copy phone number:', error);
+        toast.error('Failed to copy phone number.');
+      });
+    setModalIsOpen(false);
+  };
+
+  const handleOpenMessages = () => {
+    const phoneNumber = '571-778-9224';
+    const messageText = `Hi! I'd like to get in touch with you.`;
+    window.location.href = `sms:${phoneNumber}&body=${encodeURIComponent(messageText)}`;
+    toast.success('Opening iMessage...');
+    setModalIsOpen(false);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -120,7 +176,7 @@ const Contact: React.FC = () => {
             <label htmlFor="message" className="block text-sm font-medium text-gray-700">Message:</label>
             <textarea
               id="message"
-              className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="mt-1 h-[200px] p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 sm:text-sm"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               required
@@ -128,14 +184,47 @@ const Contact: React.FC = () => {
           </div>
           <button
             type="submit"
-            className={`w-full p-2 mt-2 text-white rounded-md ${isSubmitting ? 'bg-gray-400' : 'bg-indigo-600 hover:bg-indigo-700'}`}
+            className={`w-full p-2 mt-2 text-white rounded-md ${isSubmitting ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-800'}`}
             disabled={isSubmitting}
           >
             {isSubmitting ? 'Sending...' : 'Submit'}
           </button>
         </form>
+
+        <button
+          onClick={handleSendText}
+          className="w-full p-2 mt-4 text-white bg-green-600 hover:bg-green-700 rounded-md"
+        >
+          Send Text
+        </button>
         <ToastContainer />
       </div>
+
+      {/* Text Message Modal */}
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={() => setModalIsOpen(false)}
+        contentLabel="Contact Options"
+        className="m-auto max-w-sm p-6 bg-white rounded-md shadow-lg"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center"
+      >
+        <h2 className="text-xl font-bold mb-4">Send Text Message</h2>
+        <p>How would you like to proceed?</p>
+        <div className="flex justify-between mt-6">
+          <button
+            onClick={handleCopyToClipboard}
+            className="w-1/2 p-2 bg-blue-500 text-white rounded-md mr-2"
+          >
+            Copy to Clipboard
+          </button>
+          <button
+            onClick={handleOpenMessages}
+            className="w-1/2 p-2 bg-blue-500 text-white rounded-md ml-2"
+          >
+            Open iMessage
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 };
