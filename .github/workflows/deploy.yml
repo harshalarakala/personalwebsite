@@ -19,7 +19,7 @@ jobs:
         node-version: '18'  # Make sure this matches your project's Node version
 
     - name: Install dependencies
-      run: npm install
+      run: npm install --legacy-peer-deps
 
     - name: Set git user
       run: |
