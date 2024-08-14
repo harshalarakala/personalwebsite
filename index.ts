@@ -1,1 +1,1 @@
-import "./src/client";
+import "./src";
