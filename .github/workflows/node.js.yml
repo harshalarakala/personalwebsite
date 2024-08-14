@@ -33,7 +33,14 @@ jobs:
     - name: Build project
       run: npm run build
 
-    - name: Upload production build as artifact
+    - name: Deploy to GitHub Pages
+      run: |
+        npm install -g gh-pages
+        gh-pages -d build
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload production build as artifact (Optional)
       uses: actions/upload-artifact@v3
       with:
         name: build
