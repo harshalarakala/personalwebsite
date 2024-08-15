@@ -159,7 +159,7 @@ const Contact: React.FC = () => {
           </React.Fragment>
         ))}
       </div>
-
+  
       {/* Contact Form */}
       <div className="max-w-md mx-auto mt-10 p-4 border border-gray-300 shadow-md rounded-lg bg-slate-200 z-40">
         <p className="mb-4">
@@ -200,22 +200,43 @@ const Contact: React.FC = () => {
           </div>
           <button
             type="submit"
-            className={`w-full p-2 mt-2 text-white rounded-md ${isSubmitting ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-800'}`}
+            className={`w-full p-2 mt-2 text-white rounded-md ${isSubmitting ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-900'}`}
             disabled={isSubmitting}
           >
             {isSubmitting ? 'Sending...' : 'Submit'}
           </button>
         </form>
-
         <button
-          onClick={handleSendText}
-          className="w-full p-2 mt-4 text-white bg-green-600 hover:bg-green-700 rounded-md"
+            onClick={handleSendText}
+          className="w-full p-2 mt-4 text-white bg-green-600 hover:bg-green-900 rounded-md"
         >
           Send Text
         </button>
+        <div className="flex justify-between mt-4 ">
+          {/* GitHub Icon Card */}
+          <a
+            href="https://github.com/harshalarakala"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-1/2 p-4 border border-gray-300 shadow-md rounded-lg bg-white flex justify-center items-center mr-2 hover:bg-gray-600 transition-colors duration-300 group"
+          >
+            <img src={github} alt="GitHub" className="h-8 w-8 group-hover:scale-110 transition-transform duration-300" />
+          </a>
+
+          {/* LinkedIn Icon Card */}
+          <a
+            href="https://linkedin.com/in/harshalarakala"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-1/2 p-4 border border-gray-300 shadow-md rounded-lg bg-white flex justify-center items-center ml-2 hover:bg-gray-600 transition-colors duration-300 group"
+          >
+            <img src={linkedIn} alt="LinkedIn" className="h-8 w-8 group-hover:scale-110 transition-transform duration-300" />
+          </a>
+        </div>
+  
         <ToastContainer />
       </div>
-
+  
       {/* Text Message Modal */}
       <Modal
         isOpen={modalIsOpen}
@@ -243,6 +264,6 @@ const Contact: React.FC = () => {
       </Modal>
     </div>
   );
-};
+}  
 
 export default Contact;
