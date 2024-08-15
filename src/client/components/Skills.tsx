@@ -64,7 +64,6 @@ const SkillCarousel: React.FC<{ items: Array<{ name: string, icon: JSX.Element, 
   const [translateXValue, setTranslateXValue] = useState(0); // State to hold translateX
   const carouselRef = useRef<HTMLDivElement>(null); // Reference to the carousel
   const [dragStartX, setDragStartX] = useState<number | null>(null);
-  const [dragOffset, setDragOffset] = useState(0);
 
   useEffect(() => {
     // Calculate initial centering
@@ -104,7 +103,7 @@ const SkillCarousel: React.FC<{ items: Array<{ name: string, icon: JSX.Element, 
 
   const calculateTranslateX = (index: number) => {
     const carouselWidth = carouselRef.current?.offsetWidth || 0;
-    const itemWidth = 220; // The width of each carousel item
+    const itemWidth = 220;
     const centerPosition = (carouselWidth / 2) - (itemWidth / 2);
     return centerPosition - index * itemWidth;
   };
@@ -117,27 +116,20 @@ const SkillCarousel: React.FC<{ items: Array<{ name: string, icon: JSX.Element, 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (dragStartX !== null) {
       const dragDistance = e.clientX - dragStartX;
-      const itemWidth = 220; // The width of each carousel item
 
-      // Update dragOffset to calculate the index shift
-      setDragOffset(dragDistance);
-
-      // If the drag distance is significant, shift the index
       if (Math.abs(dragDistance) > 150) {
         if (dragDistance > 0) {
           prevSlide();
         } else {
           nextSlide();
         }
-        setDragStartX(e.clientX); // Reset the start position after moving to the next/prev item
-        setDragOffset(0); // Reset drag offset after slide shift
+        setDragStartX(e.clientX);
       }
     }
   };
 
   const handleMouseUp = () => {
     setDragStartX(null);
-    setDragOffset(0);
   };
 
   const handleMouseLeave = () => {
@@ -174,7 +166,7 @@ const SkillCarousel: React.FC<{ items: Array<{ name: string, icon: JSX.Element, 
               transition: dragStartX !== null ? 'none' : 'transform 0.5s, opacity 0.5s',
               margin: '0 10px',
               cursor: 'pointer',
-              width: '200px', // Define the fixed width of the carousel item
+              width: '200px',
             }}
           >
             <div className="card p-4 border border-gray-300 rounded-lg shadow-lg bg-white flex flex-col items-center hover:bg-gray-100 transform transition-all duration-300 ease-out">
