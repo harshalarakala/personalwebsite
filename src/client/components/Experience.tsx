@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Projects: React.FC = () => {
+const Experience: React.FC = () => {
   return (
     <div>
       <h2 className="text-2xl font-bold mb-4">Projects</h2>
@@ -16,4 +16,4 @@ const Projects: React.FC = () => {
   );
 };
 
-export default Projects;
+export default Experience;

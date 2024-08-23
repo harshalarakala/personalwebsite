@@ -28,10 +28,10 @@ const NavBar: React.FC = () => {
           Overview
         </span>
         <span
-          className={`${getTabClass('projects')} min-h-[50px] leading-[1.5]`}
-          onClick={() => dispatch({ type: 'SET_SECTION', payload: 'projects' })}
+          className={`${getTabClass('experience')} min-h-[50px] leading-[1.5]`}
+          onClick={() => dispatch({ type: 'SET_SECTION', payload: 'experience' })}
         >
-          Projects
+          Experience
         </span>
         <span
           className={`${getTabClass('skills')} min-h-[50px] leading-[1.5]`}

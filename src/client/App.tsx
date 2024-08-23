@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import NavBar from './components/NavBar';
 import { SectionProvider, AppContext } from './context/AppContext';
 import Overview from './components/Overview';
-import Projects from './components/Projects';
+import Experience from './components/Experience';
 import Skills from './components/Skills';
 import Contact from './components/Contact';
 
@@ -34,8 +34,8 @@ const SectionRenderer: React.FC = () => {
     switch (state.currentSection) {
       case 'overview':
         return <Overview />;
-      case 'projects':
-        return <Projects />;
+      case 'experience':
+        return <Experience />;
       case 'skills':
         return <Skills />;
       case 'contact':
