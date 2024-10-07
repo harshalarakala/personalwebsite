@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "/personalwebsite/static/css/main.fee6734a.css",
+    "main.js": "/personalwebsite/static/js/main.268bc771.js",
+    "static/js/453.1581f2a8.chunk.js": "/personalwebsite/static/js/453.1581f2a8.chunk.js",
+    "static/media/costar.png": "/personalwebsite/static/media/costar.29af0b64a226c4fd5db7.png",
+    "static/media/ftcMedia.png": "/personalwebsite/static/media/ftcMedia.3cb2be6079a963094b39.png",
+    "static/media/vaMotorsportMedia.jpg": "/personalwebsite/static/media/vaMotorsportMedia.a1ebf49f9e65b7df90f9.jpg",
+    "static/media/funlandMedia.jpg": "/personalwebsite/static/media/funlandMedia.267638287a87b10e2d0e.jpg",
+    "static/media/mathnasiumMedia.png": "/personalwebsite/static/media/mathnasiumMedia.4c86d6833a5cd0cb8c93.png",
+    "static/media/profile.jpeg": "/personalwebsite/static/media/profile.33ffbae5ca764f813230.jpeg",
+    "static/media/acentleMedia.jpg": "/personalwebsite/static/media/acentleMedia.6483218169d21d3b8082.jpg",
+    "static/media/insta.png": "/personalwebsite/static/media/insta.2d5cedd576ca1a740d7c.png",
+    "static/media/linkedin.png": "/personalwebsite/static/media/linkedin.68ac41e1459436bfd38f.png",
+    "index.html": "/personalwebsite/index.html",
+    "main.fee6734a.css.map": "/personalwebsite/static/css/main.fee6734a.css.map",
+    "main.268bc771.js.map": "/personalwebsite/static/js/main.268bc771.js.map",
+    "453.1581f2a8.chunk.js.map": "/personalwebsite/static/js/453.1581f2a8.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.fee6734a.css",
+    "static/js/main.268bc771.js"
+  ]
+}

@@ -1,22 +1,32 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { experiences, projects, Experience, Project } from './data';
+import { experiences, projects, Item } from './data';
+
+const parseStartDate = (duration: string): Date => {
+  const [start] = duration.split(' — ');
+  const [month, year] = start.split(' ');
+  return new Date(`${month} 1, ${year}`);
+};
 
 const ExperienceComponent: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imageVisible, setImageVisible] = useState(true);
   const [view, setView] = useState<'experiences' | 'projects'>('experiences');
+  const [sortByDate, setSortByDate] = useState<'asc' | 'desc'>('desc');
   const listRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
-
     return () => {
       document.body.style.overflow = 'auto';
     };
   }, []);
 
-  const data: (Experience | Project)[] = view === 'experiences' ? experiences : projects;
+  const sortedData = (view === 'experiences' ? experiences : projects).sort((a, b) => {
+    const dateA = parseStartDate(a.duration);
+    const dateB = parseStartDate(b.duration);
+    return sortByDate === 'asc' ? dateA.getTime() - dateB.getTime() : dateB.getTime() - dateA.getTime();
+  });
 
   const handleCardClick = (index: number) => {
     if (index !== currentIndex) {
@@ -43,7 +53,7 @@ const ExperienceComponent: React.FC = () => {
   }, [currentIndex]);
 
   const handleNext = () => {
-    if (currentIndex < data.length - 1) {
+    if (currentIndex < sortedData.length - 1) {
       handleCardClick(currentIndex + 1);
     }
   };
@@ -54,7 +64,24 @@ const ExperienceComponent: React.FC = () => {
     }
   };
 
-  const isExperience = (item: Experience | Project): item is Experience => item.type === 'experience';
+  const renderFullDescription = (fullDescription: string) => {
+    return fullDescription.split('\n\n').map((paragraph, idx) => {
+      if (paragraph.startsWith('### ')) {
+        const heading = paragraph.replace('### ', '');
+        return (
+          <h2 key={idx} className="text-2xl font-bold mt-4 mb-2 text-red-800">
+            {heading}
+          </h2>
+        );
+      } else {
+        return (
+          <p key={idx} className="text-gray-700 mb-4">
+            {paragraph}
+          </p>
+        );
+      }
+    });
+  };
 
   return (
     <div className="w-full h-screen flex overflow-hidden">
@@ -71,7 +98,7 @@ const ExperienceComponent: React.FC = () => {
           </button>
           <button
             onClick={handleNext}
-            disabled={currentIndex === data.length - 1}
+            disabled={currentIndex === sortedData.length - 1}
             className="px-3 py-1 bg-red-500 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Next
@@ -80,39 +107,20 @@ const ExperienceComponent: React.FC = () => {
         <div className="flex-1 max-w-4xl w-full mx-auto pb-16 mb-8 relative">
           <div className={`transition-all duration-300 ${imageVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
             <img
-              src={data[currentIndex].media}
-              alt={`Media for ${data[currentIndex].title}`}
+              src={sortedData[currentIndex].media}
+              alt={`Media for ${sortedData[currentIndex].title}`}
               className="w-full h-64 object-cover rounded-lg mb-6 shadow-lg"
             />
           </div>
 
-          <h1 className="text-3xl font-bold mb-2">{data[currentIndex].title}</h1>
+          <h1 className="text-3xl font-bold mb-2">{sortedData[currentIndex].title}</h1>
 
-          {isExperience(data[currentIndex]) && (
-            <p className="text-lg text-gray-500 mb-4">{data[currentIndex].duration}</p>
+          {sortedData[currentIndex].duration && (
+            <p className="text-lg text-gray-500 mb-4">{sortedData[currentIndex].duration}</p>
           )}
 
           <div className="prose prose-lg max-w-none flex-1 overflow-y-auto">
-            {isExperience(data[currentIndex]) ? (
-              data[currentIndex].fullDescription.split('\n\n').map((paragraph, idx) => {
-                if (paragraph.startsWith('### ')) {
-                  const heading = paragraph.replace('### ', '');
-                  return (
-                    <h2 key={idx} className="text-2xl font-bold mt-4 mb-2 text-red-800">
-                      {heading}
-                    </h2>
-                  );
-                } else {
-                  return (
-                    <p key={idx} className="text-gray-700 mb-4">
-                      {paragraph}
-                    </p>
-                  );
-                }
-              })
-            ) : (
-              <p className="text-gray-700 mb-4">{data[currentIndex].fullDescription}</p>
-            )}
+            {renderFullDescription(sortedData[currentIndex].fullDescription)}
           </div>
         </div>
       </div>
@@ -120,11 +128,11 @@ const ExperienceComponent: React.FC = () => {
       {/* Vertical List of Experiences/Projects */}
       <div
         ref={listRef}
-        className="w-1/3 bg-white pr-8 pl-8 pb-8 overflow-y-auto mb-10"
-        style={{ maxHeight: '100vh' }}
+        className="w-1/3 bg-white pr-8 pl-8 pb-8 overflow-y-auto mb-10 flex flex-col items-center"
+        style={{ maxHeight: 'full'}}
       >
         {/* Toggle Selector with sticky positioning */}
-        <div className="bg-gray-100 p-4 rounded-lg mb-4 w-full shadow-md sticky top-0 z-10">
+        <div className="bg-gray-100 p-4 rounded-lg mb-4 w-full shadow-md sticky top-0 z-20">
           <div className="flex justify-center">
             <button
               className={`px-4 py-2 mx-2 rounded ${
@@ -148,32 +156,40 @@ const ExperienceComponent: React.FC = () => {
             >
               Projects
             </button>
+            {/* Sort by Date Button */}
+            <button
+              className="px-4 py-2 mx-2 rounded border-red-500 bg-gray-300 border-2"
+              onClick={() => {
+                setSortByDate(sortByDate === 'asc' ? 'desc' : 'asc');
+              }}
+            >
+              Sort by: {sortByDate === 'desc' ? 'Most Recent' : 'Oldest'}
+            </button>
           </div>
         </div>
-
-        {data.map((item, index) => (
-          <div
-            key={index}
-            ref={(el) => (itemRefs.current[index] = el)}
-            className={`cursor-pointer border rounded-lg overflow-hidden mb-4 transition-transform transform hover:scale-[1.02] ${
-              index === currentIndex ? 'border-red-500 shadow-lg' : 'border-gray-200'
-            }`}
-            onClick={() => handleCardClick(index)}
-          >
-            <img
-              src={item.media}
-              alt={`Media for ${item.title}`}
-              className={`w-full object-cover transition-all duration-300 ${index === currentIndex ? 'h-0 opacity-0' : 'h-40 opacity-100'}`}
-            />
-            <div className="p-4">
-              <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
-              {isExperience(item) && (
+        <div className=' max-w-[97%]'>
+          {sortedData.map((item, index) => (
+            <div
+              key={index}
+              ref={(el) => (itemRefs.current[index] = el)}
+              className={`cursor-pointer border rounded-lg overflow-hidden mb-4 transition-transform transform hover:scale-[1.02] ${
+                index === currentIndex ? 'border-red-500 shadow-lg' : 'border-gray-200'
+              }`}
+              onClick={() => handleCardClick(index)}
+            >
+              <img
+                src={item.media}
+                alt={`Media for ${item.title}`}
+                className={`w-full object-cover transition-all duration-300 ${index === currentIndex ? 'h-0 opacity-0' : 'h-40 opacity-100'}`}
+              />
+              <div className="p-4">
+                <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
                 <p className="text-sm text-gray-500 mb-2">{item.duration}</p>
-              )}
-              <p className="text-gray-700 text-sm">{isExperience(item) ? item.briefDescription : item.description}</p>
+                <p className="text-gray-700 text-sm">{item.briefDescription}</p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
