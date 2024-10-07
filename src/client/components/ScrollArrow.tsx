@@ -37,28 +37,16 @@ const ScrollArrow: React.FC = () => {
                 {isAtBottom ? (
                     <>
                         <FaArrowUp
-                            className="text-4xl animate-bounce"
-                            style={{
-                                background: 'linear-gradient(to right, #3b82f6, #f59e0b, #ef4444)',
-                                WebkitBackgroundClip: 'text',
-                                backgroundClip: 'text',
-                                animation: 'gradientShift 4s ease infinite',
-                                backgroundSize: '200% 200%',
-                            }}
+                            className="text-4xl"
+                            style={{ color: 'black' }}
                         />
                         <span className="ml-2 text-gray-900">Scroll to Top</span>
                     </>
                 ) : (
                     <>
                         <FaArrowDown
-                            className="text-4xl animate-bounce"
-                            style={{
-                                background: 'linear-gradient(to right, #3b82f6, #f59e0b, #ef4444)',
-                                WebkitBackgroundClip: 'text',
-                                backgroundClip: 'text',
-                                animation: 'gradientShift 4s ease infinite',
-                                backgroundSize: '200% 200%',
-                            }}
+                            className="text-4xl"
+                            style={{ color: 'black' }}
                         />
                         <span className="ml-2 text-gray-900">Scroll to Bottom</span>
                     </>

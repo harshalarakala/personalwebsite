@@ -13,14 +13,14 @@ const NavBar: React.FC = () => {
     const getTabClass = (section: string) => {
     return `content-center text-center h-full cursor-pointer transition-transform transition-duration-500 ease-in-out w-[250px] ${
         state.currentSection === section
-            ? 'text-4xl font-bold transform scale-125 text-red-500'
+            ? 'text-xl font-bold transform scale-[1.01] text-red-500'
             : 'text-xl'
     }${state.currentSection !== section ? ' hover:underline hover:text-red-500' : ''}`;
 };
 
   return (
     <nav className="flex justify-center items-center h-16 backdrop-blur-lg bg-white">
-      <div className="flex justify-between align-middle">
+      <div className="flex justify-between align-middle ">
         <span
           className={`${getTabClass('overview')} min-h-[50px] leading-[1.5]`}
           onClick={() => dispatch({ type: 'SET_SECTION', payload: 'overview' })}
@@ -31,7 +31,7 @@ const NavBar: React.FC = () => {
           className={`${getTabClass('experience')} min-h-[50px] leading-[1.5]`}
           onClick={() => dispatch({ type: 'SET_SECTION', payload: 'experience' })}
         >
-          Experience
+          Experience/Projects
         </span>
         <span
           className={`${getTabClass('skills')} min-h-[50px] leading-[1.5]`}

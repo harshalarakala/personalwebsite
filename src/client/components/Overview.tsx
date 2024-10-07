@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
 import { AppContext } from '../context/AppContext';
 import profileImage from '../images/profile.jpeg';
+import ReactTypingEffect from 'react-typing-effect';
+import { Typewriter } from 'react-simple-typewriter';
 import { FaRobot, FaCar, FaPlane, FaBrain, FaUserTie, FaChalkboardTeacher, FaHandsHelping, FaCertificate, FaDollarSign, FaSchool, FaUniversity, FaFileDownload, FaLaptopCode, FaTools, FaGraduationCap } from 'react-icons/fa';
 import ScrollArrow from './ScrollArrow'; // Import the ScrollArrow component
 
@@ -16,30 +18,60 @@ const Overview: React.FC = () => {
 
     return (
         <section id="overview" className="relative min-h-screen bg-gray-900 text-white p-8 pb-24">
-            <div className="container mx-auto">
+            <div className="container mx-auto px-4 md:px-8">
                 {/* Profile Image and About Section */}
-                <div className="relative flex flex-col md:flex-row md:justify-between items-start mb-16">
-                    <div className="md:w-1/3">
+                <div className="flex flex-col md:flex-row items-center justify-between md:space-x-8 mt-8">
+                    <div className="w-full md:w-1/3 flex justify-center">
                         <img
                             src={profileImage}
                             alt="Harshal Arakala"
-                            className="rounded-full w-64 h-64 md:w-80 md:h-80 object-cover shadow-lg"
+                            className="rounded-xl w-64 h-auto md:w-80 md:h-80 object-cover shadow-lg"
+                            style={{ objectPosition: 'center left', zoom: '1.2' }}  // Adjust position and zoom
                         />
                     </div>
-                    <div className="md:w-2/3 bg-white text-gray-900 rounded-lg p-6 shadow-lg text-lg leading-relaxed mt-8 md:mt-0">
-                        <h1 className="text-4xl font-bold text-center">Harshal Arakala</h1>
-                        <p className="text-xl font-semibold text-green-400 text-center">Software Engineer and Student @ UVA</p>
-                        <p className="mt-4 text-left">
-                            My name is Harshal Arakala, and I am an aspiring software engineer with a deep passion for cars, planes, leadership, math, robotics, and engineering. I grew up in the Herndon area, where these interests drove me to constantly explore and learn, whether tinkering with machines or leading team projects at school.
+                    <div className="w-full md:w-2/3 bg-white text-gray-900 rounded-lg p-6 shadow-lg text-lg leading-relaxed mt-8 md:mt-0">
+                        <h1 className="text-4xl font-bold text-center">
+                            <Typewriter
+                                words={['Harshal Arakala']}
+                                loop={1}
+                                cursor
+                                cursorStyle="|"
+                                typeSpeed={10}
+                                deleteSpeed={0}
+                                delaySpeed={1000}
+                            />
+                        </h1>
+                        <p className="text-xl font-semibold text-green-400 text-center">
+                            <Typewriter
+                                words={['Software Engineer and Student @ UVA']}
+                                loop={1}
+                                cursor
+                                cursorStyle="|"
+                                typeSpeed={10}
+                                deleteSpeed={0}
+                                delaySpeed={1000}
+                            />
                         </p>
-                        <p className="mt-2 text-left">
-                            My journey has been marked by continuous learning, growth, and a strong commitment to both academics and extracurricular activities, laying the foundation for my future in engineering and technology. I am currently pursuing a degree in Computer Science at the University of Virginia, where I have taken part in various impactful projects and competitions.
+                        <p className="mt-4 text-left">
+                            <Typewriter
+                                words={[
+                                    'My name is Harshal Arakala, and I am an aspiring software engineer with a deep passion for cars, planes, leadership, math, robotics, and engineering. I grew up in the Herndon area, where these interests drove me to constantly explore and learn, whether tinkering with machines or leading team projects at school. My journey has been marked by continuous learning, growth, and a strong commitment to both academics and extracurricular activities, laying the foundation for my future in engineering and technology. I am currently pursuing a degree in Computer Science at the University of Virginia, where I have taken part in various impactful projects and competitions.',
+                                    'Throughout my academic career, I have honed my skills in software development, focusing on both front-end and back-end technologies, including React, Node.js, and C#. My experience in projects such as developing full-stack applications and implementing machine learning models for data analysis has equipped me with a strong technical foundation and problem-solving skills.',
+                                    'I am passionate about leveraging technology to solve real-world problems and have a particular interest in artificial intelligence and cloud computing. My hands-on experience with AWS and Elastic Search has enabled me to optimize data handling and improve system performance, reflecting my commitment to continuous improvement and innovation.',
+                                    'In addition to my technical skills, I believe in the power of collaboration and effective communication. My roles in various team projects and leadership positions have taught me the importance of teamwork, adaptability, and the ability to thrive in dynamic environments. I am driven by a desire to create meaningful impact through technology and am eager to continue learning and growing as a software engineer.'
+                                ]}
+                                loop={1}
+                                cursor
+                                cursorStyle="|"
+                                typeSpeed={25}
+                                deleteSpeed={0}
+                                delaySpeed={1000}
+                            />
                         </p>
                     </div>
                 </div>
-
                 {/* Interests Section */}
-                <div className="container mx-auto mt-20">
+                <div className="container mx-auto mt-8">
                     <div className="w-full bg-white text-gray-900 rounded-lg p-6 shadow-lg mb-8">
                         <h2 className="text-2xl font-semibold mb-4 text-center">Interests</h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
