@@ -1,4 +1,3 @@
-// data.ts
 import costarMedia from '../images/costar.png';
 import acentleMedia from '../images/acentleMedia.jpg';
 import mathnasiumMedia from '../images/mathnasiumMedia.png';
