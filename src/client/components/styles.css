@@ -15,77 +15,55 @@
     transition: filter 0.2s, opacity 0.2s;
   }
 
-  .bg-gray-100 {
-    background-color: #6e8290;
-    border: 1px solid #e2e8f0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  svg {
-    transition: all 0.3s ease-in-out;
-  }
-  
-  path {
-    transition: all 0.3s ease-in-out;
-  }
-
-  /* SpotifyNowPlaying.css */
-
-.spotify-player {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background-color: #1db954; /* Spotify Green */
-  border-radius: 24px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+/* Cube container */
+.cube-container {
   display: flex;
-  align-items: center;
-  padding: 10px;
-  width: 300px;
-  max-width: 90vw;
-  animation: fadeIn 1s ease-in-out;
-}
-
-.album-cover {
-  width: 60px;
-  height: 60px;
-  border-radius: 4px;
-  margin-right: 10px;
-}
-
-.song-info {
-  display: flex;
-  flex-direction: column;
   justify-content: center;
+  align-items: center;
+  height: 400px; /* Adjust this height as needed */
+  perspective: 1000px;
 }
 
-.song-title {
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
-  text-decoration: none;
+/* Cube */
+.cube {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  transform-style: preserve-3d;
+  transform: rotateX(0deg) rotateY(0deg);
+  transition: transform 0.5s ease;
 }
 
-.song-title:hover {
-  text-decoration: underline;
+.cube .side {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background: rgba(255, 0, 0, 0.8);
+  border: 1px solid #000;
 }
 
-.artist-name {
-  color: #c7c7c7;
-  font-size: 14px;
-  margin-top: 2px;
+/* Cube Sides */
+.front {
+  transform: translateZ(100px);
+  background-color: red;
 }
-
-/* Optional: Fade-in animation */
-@keyframes fadeIn {
-  from {
-      opacity: 0;
-      transform: translateY(20px);
-  }
-  to {
-      opacity: 1;
-      transform: translateY(0);
-  }
+.back {
+  transform: rotateY(180deg) translateZ(100px);
+  background-color: blue;
+}
+.left {
+  transform: rotateY(-90deg) translateZ(100px);
+  background-color: green;
+}
+.right {
+  transform: rotateY(90deg) translateZ(100px);
+  background-color: yellow;
+}
+.top {
+  transform: rotateX(90deg) translateZ(100px);
+  background-color: orange;
+}
+.bottom {
+  transform: rotateX(-90deg) translateZ(100px);
+  background-color: purple;
 }
