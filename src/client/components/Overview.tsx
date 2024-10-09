@@ -5,7 +5,6 @@ import profileImage from '../images/profile.jpeg';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaFileDownload, FaBriefcase, FaPhone } from 'react-icons/fa';
 import './CubeStyles.css';
-import SpotifyNowPlaying from './SpotifyNowPlaying';
 
 const Overview: React.FC = () => {
     const context = useContext(AppContext);
@@ -134,9 +133,6 @@ const Overview: React.FC = () => {
                     </div>
                 </motion.div>
             </div>
-
-            {/* Spotify Now Playing Component */}
-            <SpotifyNowPlaying />
         </section>
     );
 
