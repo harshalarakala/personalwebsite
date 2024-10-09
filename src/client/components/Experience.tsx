@@ -50,6 +50,7 @@ const ExperienceComponent: React.FC = () => {
 
   useEffect(() => {
     scrollToCurrent();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentIndex]);
 
   const handleNext = () => {
@@ -86,7 +87,7 @@ const ExperienceComponent: React.FC = () => {
   return (
     <div className="w-full h-screen flex flex-col lg:flex-row overflow-hidden">
       {/* Highlighted Item - Hidden on mobile */}
-      <div className="flex-1 flex flex-col pt-8 bg-gray-100 overflow-y-auto rounded-xl relative mb-10 lg:mb-20 lg:ml-10 hidden lg:block">
+      <div className="flex-1 flex flex-col pt-8 bg-gray-100 overflow-y-auto rounded-xl relative mb-10 lg:mb-20 lg:ml-10 lg:block">
         {/* Floating Navigation Bar */}
         <div className="fixed bottom-4 left-4 lg:bottom-[2.5rem] lg:left-[4rem] bg-white shadow-md p-4 rounded-lg flex justify-between w-48 z-50">
           <button
