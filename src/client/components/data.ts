@@ -12,6 +12,8 @@ import scoreMyHomeMedia from '../images/scoremyhomeMedia.jpg';
 export interface Item {
   type: string;
   title: string;
+  company?: string;
+  position?: string;
   duration: string;
   summary: string;
   briefDescription: string;
@@ -22,7 +24,9 @@ export interface Item {
 export const experiences: Item[] = [
   {
     type: 'experience',
+    company: 'Costar Group',
     title: 'Fullstack ML Intern, Costar Group, Richmond, VA',
+    position: 'Fullstack ML Intern',
     duration: 'Jun 2024 — Aug 2024',
     summary:
       'Developed a machine learning data syncing system and an executive dashboard.',
@@ -59,6 +63,8 @@ This experience taught me invaluable lessons about the intersection of technolog
   {
     type: 'experience',
     title: 'Software Developer Intern, Acentle, Herndon, VA',
+    company: 'Acentle',
+    position: 'Software Developer Intern',
     duration: 'Jun 2022 — May 2023',
     summary:
       'Advanced my web development skills and developed internal software tools.',
@@ -100,6 +106,8 @@ Working at Acentle taught me the value of adaptability — both in terms of tech
     type: 'experience',
     title: 'Board Member, Virginia Motorsport',
     duration: 'Aug 2022 — Present',
+    company: 'Virginia Motorsport',
+    position: 'Board Member',
     summary: 'Managed financial operations and fundraising for car building and racing projects at UVA’s motorsport club.',
     briefDescription: 'At Virginia Motorsport, I managed the club’s finances, optimizing resource allocation for car construction and racing competitions. I secured sponsorships and handled budgeting to ensure project success. My contributions supported the club in building and maintaining competitive race cars while enhancing financial reporting and fundraising efforts. Our team successfully competed in several track racing events, representing UVA with pride.',
     fullDescription: `### Role & Responsibilities
@@ -123,6 +131,8 @@ This experience helped me hone my financial management skills and develop a keen
     type: 'experience',
     title: 'Co-Founder, Robotic Advancement for Youth (RAY)',
     duration: 'Aug 2021 — Present',
+    company: 'Robotic Advancement for Youth (RAY)',
+    position: 'Co-Founder',
     summary: 'Co-founded a non-profit organization to promote robotics education for youth and organized hands-on robotics summer camps.',
     briefDescription: 'I co-founded Robotic Advancement for Youth, a non-profit dedicated to empowering students through hands-on robotics education. I developed and led summer camps, teaching coding and robotics skills. Additionally, I organized mock tournaments for FIRST Lego League (FLL) and FIRST Tech Challenge (FTC), providing students with practical experience in robotics competitions.',
     fullDescription: `### Role & Responsibilities
@@ -145,6 +155,8 @@ Through this role, I was able to empower hundreds of students with the tools the
   {
     type: 'experience',
     title: 'Math Tutor, Mathnasium of Herndon',
+    company: 'Mathnasium of Herndon',
+    position: 'Math Tutor',
     duration: 'Jan 2020 — Aug 2021',
     summary: 'Tutored students in mathematics from elementary through high school levels, focusing on personalized learning plans.',
     briefDescription: 'At Mathnasium, I provided personalized tutoring to students in elementary through high school math. I tailored learning plans to fit the needs of each student, ensuring they mastered key math concepts. By building strong relationships with students, I helped them build confidence and improve their math skills, leading to higher academic performance.',
@@ -168,6 +180,8 @@ This tutoring role taught me how to break down complex concepts into simple, dig
   {
     type: 'experience',
     title: 'Customer Service Associate, Funland of Fairfax',
+    company: 'Funland of Fairfax',
+    position: 'Customer Service Associate',
     duration: 'Jun 2019 — Dec 2019',
     summary: 'Provided exceptional customer service, assisting guests with arcade games and events at Funland of Fairfax.',
     briefDescription: 'As a Customer Service Associate at Funland, I assisted guests with arcade games, event planning, and general inquiries. I ensured a positive guest experience by providing excellent service and resolving customer issues quickly. My role allowed me to develop strong communication skills and gain experience working in a fast-paced, customer-facing environment.',

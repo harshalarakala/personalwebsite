@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { experiences, projects, Item } from './data';
+import { experiences, projects } from './data';
 
 const parseStartDate = (duration: string): Date => {
   const [start] = duration.split(' — ');
@@ -50,6 +50,7 @@ const ExperienceComponent: React.FC = () => {
 
   useEffect(() => {
     scrollToCurrent();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentIndex]);
 
   const handleNext = () => {
@@ -84,11 +85,11 @@ const ExperienceComponent: React.FC = () => {
   };
 
   return (
-    <div className="w-full h-screen flex overflow-hidden">
-      {/* Highlighted Item */}
-      <div className="flex-1 flex flex-col pt-8 bg-gray-100 overflow-y-auto rounded-xl relative mb-20 ml-10">
+    <div className="w-full h-screen flex flex-col lg:flex-row overflow-hidden">
+      {/* Highlighted Item - Hidden on mobile */}
+      <div className="flex-1 flex flex-col pt-8 bg-gray-100 overflow-y-auto rounded-xl relative mb-10 lg:mb-20 lg:ml-10 lg:block">
         {/* Floating Navigation Bar */}
-        <div className="fixed bottom-[2rem] right-[44rem] bg-white shadow-md p-4 rounded-lg flex justify-between w-48 z-50">
+        <div className="fixed bottom-4 left-4 lg:bottom-[2.5rem] lg:left-[4rem] bg-white shadow-md p-4 rounded-lg flex justify-between w-48 z-50">
           <button
             onClick={handlePrevious}
             disabled={currentIndex === 0}
@@ -104,7 +105,7 @@ const ExperienceComponent: React.FC = () => {
             Next
           </button>
         </div>
-        <div className="flex-1 max-w-4xl w-full mx-auto pb-16 mb-8 relative">
+        <div className="flex-1 max-w-5xl w-full mx-auto pb-16 mb-8 relative px-4">
           <div className={`transition-all duration-300 ${imageVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
             <img
               src={sortedData[currentIndex].media}
@@ -128,14 +129,13 @@ const ExperienceComponent: React.FC = () => {
       {/* Vertical List of Experiences/Projects */}
       <div
         ref={listRef}
-        className="w-1/3 bg-white pr-8 pl-8 pb-8 overflow-y-auto mb-10 flex flex-col items-center"
-        style={{ maxHeight: 'full'}}
+        className="lg:w-1/3 w-full bg-white lg:pr-8 lg:pl-8 pb-8 overflow-y-auto mb-10 flex flex-col items-center"
       >
         {/* Toggle Selector with sticky positioning */}
-        <div className="bg-gray-100 p-4 rounded-lg mb-4 w-full shadow-md sticky top-0 z-20">
-          <div className="flex justify-center">
+        <div className="bg-gray-100 p-2 lg:p-4 rounded-lg mb-4 w-full shadow-md sticky top-0 z-20">
+          <div className="flex flex-wrap justify-center items-center">
             <button
-              className={`px-4 py-2 mx-2 rounded ${
+              className={`p-2 lg:p-2 m-2 lg:m-2 rounded ${
                 view === 'experiences' ? 'bg-red-500 text-white shadow-lg' : 'bg-gray-300 hover:bg-gray-400'
               }`}
               onClick={() => {
@@ -146,7 +146,7 @@ const ExperienceComponent: React.FC = () => {
               Experiences
             </button>
             <button
-              className={`px-4 py-2 mx-2 rounded ${
+              className={`p-2 m-2 rounded ${
                 view === 'projects' ? 'bg-red-500 text-white shadow-lg' : 'bg-gray-300 hover:bg-gray-400'
               }`}
               onClick={() => {
@@ -158,32 +158,32 @@ const ExperienceComponent: React.FC = () => {
             </button>
             {/* Sort by Date Button */}
             <button
-              className="px-4 py-2 mx-2 rounded border-red-500 bg-gray-300 border-2"
+              className="p-2 m-2 rounded border-red-500 bg-gray-300 border-2"
               onClick={() => {
                 setSortByDate(sortByDate === 'asc' ? 'desc' : 'asc');
               }}
             >
-              Sort by: {sortByDate === 'desc' ? 'Most Recent' : 'Oldest'}
+              Sort by: {sortByDate === 'desc' ? 'Recent' : 'Oldest'}
             </button>
           </div>
         </div>
-        <div className=' max-w-[97%]'>
+        <div className="max-w-[97%]">
           {sortedData.map((item, index) => (
             <div
               key={index}
               ref={(el) => (itemRefs.current[index] = el)}
-              className={`cursor-pointer border rounded-lg overflow-hidden mb-4 transition-transform transform hover:scale-[1.02] ${
-                index === currentIndex ? 'border-red-500 shadow-lg' : 'border-gray-200'
-              }`}
+              className="cursor-pointer border rounded-lg overflow-hidden mb-4 transition-transform transform hover:scale-[1.02] shadow-lg drop-shadow-4xl border-gray-200"
               onClick={() => handleCardClick(index)}
             >
               <img
                 src={item.media}
                 alt={`Media for ${item.title}`}
-                className={`w-full object-cover transition-all duration-300 ${index === currentIndex ? 'h-0 opacity-0' : 'h-40 opacity-100'}`}
+                className={`w-full object-cover transition-all duration-300 ${
+                  index === currentIndex ? 'h-0 opacity-0' : 'h-40 opacity-100'
+                }`}
               />
               <div className="p-4">
-                <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
+                <h3 className={`transition-all duration-700 ${index === currentIndex ? 'text-red-500' : ''}`}>{item.title}</h3>
                 <p className="text-sm text-gray-500 mb-2">{item.duration}</p>
                 <p className="text-gray-700 text-sm">{item.briefDescription}</p>
               </div>
