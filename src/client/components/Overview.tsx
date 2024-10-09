@@ -115,7 +115,7 @@ const Overview: React.FC = () => {
                             className={`flex items-center justify-center px-6 py-3 bg-red-500 text-white font-bold rounded-lg shadow-lg border-4 border-red-500 ${animate ? 'animate-pulse-border' : ''} hover:bg-red-600 transition duration-200`}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            onClick={() => handleNavigate('experiences')}
+                            onClick={() => handleNavigate('experience')}
                         >
                             <FaBriefcase className="mr-2" />
                             Experiences
