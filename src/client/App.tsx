@@ -7,13 +7,14 @@ import Skills from './components/Skills';
 import Contact from './components/Contact';
 
 const App: React.FC = () => {
+
   return (
     <SectionProvider>
-      <div className="App font-nunito">
+      <div className='h-screen'>
         <header className="App-header">
           <NavBar />
         </header>
-        <main>
+        <main className='h-full'>
           <SectionRenderer />
         </main>
       </div>

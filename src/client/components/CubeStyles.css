@@ -1,0 +1,67 @@
+/* Perspective for 3D effect */
+.cube-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 400px;
+    perspective: 1000px; /* Proper perspective to create depth */
+  }
+  
+  /* Cube dimensions */
+  .cube {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    transform-style: preserve-3d;
+    transform: rotateX(0deg) rotateY(0deg); /* Initial rotation */
+  }
+  
+  .cube .side {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 2px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    color: black;
+  }
+  
+  .cube .front {
+    background-color: #ee4444;
+    transform: translateZ(100px);
+    opacity: 0.8;
+  }
+  
+  .cube .back {
+    background-color: #ffcc00;
+    transform: rotateY(180deg) translateZ(100px);
+    opacity: 0.8;
+  }
+  
+  .cube .left {
+    background-color: #ff0055;
+    transform: rotateY(-90deg) translateZ(100px);
+    opacity: 0.8;
+  }
+  
+  .cube .right {
+    background-color: #8855ff;
+    transform: rotateY(90deg) translateZ(100px);
+    opacity: 0.8;
+  }
+  
+  .cube .top {
+    background-color: #0099ff;
+    transform: rotateX(90deg) translateZ(100px);
+    opacity: 0.8;
+  }
+  
+  .cube .bottom {
+    background-color: #22cc88;
+    transform: rotateX(-90deg) translateZ(100px);
+    opacity: 0.8;
+  }
+

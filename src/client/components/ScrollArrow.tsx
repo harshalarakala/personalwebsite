@@ -1,56 +1,50 @@
 import React, { useState, useEffect } from 'react';
-import { FaArrowDown, FaArrowUp } from 'react-icons/fa';
+import { FaFileDownload } from 'react-icons/fa';
 
 const ScrollArrow: React.FC = () => {
-    const [isAtBottom, setIsAtBottom] = useState(false);
+    const [animateResume, setAnimateResume] = useState(false);
+    const [animateTranscript, setAnimateTranscript] = useState(false);
 
-    const handleScroll = () => {
-        const bottomThreshold = window.innerHeight + window.scrollY >= document.body.offsetHeight - 10;
-        setIsAtBottom(bottomThreshold);
-    };
-
-    const handleScrollClick = () => {
-        if (isAtBottom) {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth',
-            });
-        } else {
-            window.scrollTo({
-                top: document.body.scrollHeight,
-                behavior: 'smooth',
-            });
-        }
+    const handleDownload = (fileUrl: string, fileName: string) => {
+        const link = document.createElement('a');
+        link.href = fileUrl;
+        link.download = fileName;
+        link.click();
     };
 
     useEffect(() => {
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
+        const resumeTimer = setTimeout(() => {
+            setAnimateResume(true);
+            setTimeout(() => setAnimateResume(false), 2000);
+        }, 2000);
+
+        const transcriptTimer = setTimeout(() => {
+            setAnimateTranscript(true);
+            setTimeout(() => setAnimateTranscript(false), 2000);
+        }, 3000);
+
+        return () => {
+            clearTimeout(resumeTimer);
+            clearTimeout(transcriptTimer);
+        };
     }, []);
 
     return (
-        <div
-            className="fixed bottom-8 right-8 cursor-pointer"
-            onClick={handleScrollClick}
-        >
-            <div className="flex items-center justify-center bg-white p-4 rounded-lg shadow-lg">
-                {isAtBottom ? (
-                    <>
-                        <FaArrowUp
-                            className="text-4xl"
-                            style={{ color: 'black' }}
-                        />
-                        <span className="ml-2 text-gray-900">Scroll to Top</span>
-                    </>
-                ) : (
-                    <>
-                        <FaArrowDown
-                            className="text-4xl"
-                            style={{ color: 'black' }}
-                        />
-                        <span className="ml-2 text-gray-900">Scroll to Bottom</span>
-                    </>
-                )}
+        <div className="fixed bottom-8 right-8 cursor-pointer space-y-4">
+            <div
+                className={`p-6 text-xl font-bold border-[3px] drop-shadow-2xl ${animateResume ? 'animate-pulse-border' : 'border-red-500'} bg-white text-black rounded-lg flex-1 text-center hover:bg-gray-100 transition duration-200 flex items-center justify-center cursor-pointer`}
+                onClick={() => handleDownload('/files/Harshal_Arakala_Resume_UVA.pdf', 'Harshal_Arakala_Resume_UVA.pdf')}
+            >
+                <FaFileDownload className="inline-block mr-4 w-6 h-6" />
+                Resume
+            </div>
+
+            <div
+                className={`p-6 text-xl font-bold border-[3px] drop-shadow-2xl ${animateTranscript ? 'animate-pulse-border' : 'border-red-500'} bg-white text-black rounded-lg flex-1 text-center hover:bg-gray-100 transition duration-200 flex items-center justify-center cursor-pointer`}
+                onClick={() => handleDownload('/files/Harshal_Arakala_Transcript_UVA.pdf', 'Harshal_Arakala_Transcript_UVA.pdf')}
+            >
+                <FaFileDownload className="inline-block mr-4 w-6 h-6" />
+                Transcript
             </div>
         </div>
     );

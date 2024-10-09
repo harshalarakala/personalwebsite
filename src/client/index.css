@@ -16,3 +16,33 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+@keyframes pulse-border {
+  0% {
+    border-color: #ff5f8d;
+}
+  16% {
+    border-color: #ff869a;
+
+  }
+  33% {
+    border-color: #ff93d3;
+}
+  50% {
+    border-color: #ff77ff;
+}
+  66% {
+    border-color: #4fa1ff;
+  }
+  83% {
+    border-color: #26a5d4;
+  }
+  100% {
+    border-color: #9a63ff;
+}
+}
+
+.animate-pulse-border {
+  animation: pulse-border 2s ease-in-out;
+  -webkit-animation: pulse-border 2s ease-in-out;
+}
