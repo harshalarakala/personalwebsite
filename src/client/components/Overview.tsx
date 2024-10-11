@@ -1,4 +1,3 @@
-// Overview.tsx
 import React, { useContext, useState, useEffect } from 'react';
 import { AppContext } from '../context/AppContext';
 import profileImage from '../images/profile.jpeg';
@@ -35,13 +34,6 @@ const Overview: React.FC = () => {
             clearTimeout(timer);
         };
     }, [statements.length]);
-
-    const handleDownload = (filePath: string, fileName: string) => {
-        const link = document.createElement('a');
-        link.href = filePath;
-        link.download = fileName;
-        link.click();
-    };
 
     const handleNavigate = (path: string) => {
         dispatch({ type: 'SET_SECTION', payload: path });
@@ -91,25 +83,25 @@ const Overview: React.FC = () => {
                     </p>
 
                     <div className="flex flex-col md:flex-row gap-4 mt-6">
-                        <motion.button
+                        <a
+                            href="https://drive.google.com/file/d/1Xv1mTfBa8JXecL5humVqRYjkMm1TVOjC/view?usp=sharing"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className={`flex items-center justify-center px-6 py-3 bg-red-500 text-white font-bold rounded-lg shadow-lg border-4 border-red-500 ${animate ? 'animate-pulse-border' : ''} hover:bg-red-600 transition duration-200`}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => handleDownload('/files/Harshal_Arakala_Resume_UVA.pdf', 'Harshal_Arakala_Resume_UVA.pdf')}
                         >
                             <FaFileDownload className="mr-2" />
                             Resume
-                        </motion.button>
+                        </a>
 
-                        <motion.button
+                        <a
+                            href="https://drive.google.com/file/d/1-hgzf2SoU1tZBXIe706HUfJAmr_XoSx3/view?usp=sharing"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className={`flex items-center justify-center px-6 py-3 bg-red-500 text-white font-bold rounded-lg shadow-lg border-4 border-red-500 ${animate ? 'animate-pulse-border' : ''} hover:bg-red-600 transition duration-200`}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => handleDownload('/files/Harshal_Arakala_Transcript_UVA.pdf', 'Harshal_Arakala_Transcript_UVA.pdf')}
                         >
                             <FaFileDownload className="mr-2" />
                             Transcript
-                        </motion.button>
+                        </a>
 
                         <motion.button
                             className={`flex items-center justify-center px-6 py-3 bg-red-500 text-white font-bold rounded-lg shadow-lg border-4 border-red-500 ${animate ? 'animate-pulse-border' : ''} hover:bg-red-600 transition duration-200`}
@@ -135,7 +127,6 @@ const Overview: React.FC = () => {
             </div>
         </section>
     );
-
 };
 
 export default Overview;
