@@ -5,20 +5,22 @@ import Overview from './components/Overview';
 import Experience from './components/Experience';
 import Skills from './components/Skills';
 import Contact from './components/Contact';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 const App: React.FC = () => {
-
   return (
-    <SectionProvider>
-      <div className='h-screen'>
-        <header className="App-header">
-          <NavBar />
-        </header>
-        <main className='h-full'>
-          <SectionRenderer />
-        </main>
-      </div>
-    </SectionProvider>
+    <GoogleOAuthProvider clientId="195786252954-j2p1t5tceicbnnocri51jospice15f99.apps.googleusercontent.com">
+      <SectionProvider>
+        <div className='h-screen'>
+          <header className="App-header">
+            <NavBar />
+          </header>
+          <main className='h-full'>
+            <SectionRenderer />
+          </main>
+        </div>
+      </SectionProvider>
+    </GoogleOAuthProvider>
   );
 };
 
