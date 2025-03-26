@@ -10,8 +10,8 @@ const App: React.FC = () => {
 
   return (
     <SectionProvider>
-      <div className='h-screen'>
-        <header className="App-header">
+      <div className=''>
+        <header className="App-header pb-32">
           <NavBar />
         </header>
         <main className='h-full'>

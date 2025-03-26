@@ -40,9 +40,9 @@ const Overview: React.FC = () => {
     };
 
     return (
-        <section id="overview" className="relative min-h-screen bg-white text-black p-8 pb-24 overflow-hidden flex items-center justify-center">
+        <section id="overview" className="relative min-h-fullC bg-white text-black p-8 pb-24 overflow-hidden flex items-center justify-center">
 
-            <div className="flex flex-col self-center md:flex-row items-center md:items-start text-center md:text-left space-y-8 md:space-y-0 md:space-x-12 w-[60%] flex-auto md:flex-none">
+            <div className="flex flex-col lg:flex-row justify-center items-center text-center space-y-8 md:space-y-0 md:space-x-12 w-[60%] flex-auto lg:flex-none flex-wrap">
                 <motion.div
                     className={`w-80 h-80 md:w-96 md:h-96 rounded-full overflow-hidden shadow-lg border-4 border-red-500 flex-shrink-0 ${animate ? 'animate-pulse-border' : ''}`}
                     initial={{ opacity: 0, scale: 0.8 }}
@@ -52,13 +52,13 @@ const Overview: React.FC = () => {
                     <img
                         src={profileImage}
                         alt="Harshal Arakala"
-                        className="object-cover w-full h-full"
-                        style={{ objectPosition: 'left', transform: 'translate(-5%, -13%)', scale: '1.35' }}
+                        className="object-cover w-full h-full "
+                        style={{ objectPosition: 'left', transform: 'translate(-5%, -13%)', scale: '1.35' , alignSelf: 'center'}}
                     />
                 </motion.div>
 
                 <motion.div
-                    className="text-gray-900 p-6 flex-1"
+                    className="text-gray-900 p-6 flex-1 break-words"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8 }}
