@@ -42,7 +42,7 @@ const Overview: React.FC = () => {
     return (
         <section id="overview" className="relative min-h-screen bg-white text-black p-8 pb-24 overflow-hidden flex items-center justify-center">
 
-            <div className="flex flex-col self-center md:flex-row items-center md:items-start text-center md:text-left space-y-8 md:space-y-0 md:space-x-12 w-[60%]">
+            <div className="flex flex-col self-center md:flex-row items-center md:items-start text-center md:text-left space-y-8 md:space-y-0 md:space-x-12 w-[60%] flex-auto md:flex-none">
                 <motion.div
                     className={`w-80 h-80 md:w-96 md:h-96 rounded-full overflow-hidden shadow-lg border-4 border-red-500 flex-shrink-0 ${animate ? 'animate-pulse-border' : ''}`}
                     initial={{ opacity: 0, scale: 0.8 }}
