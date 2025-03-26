@@ -82,7 +82,7 @@ const Overview: React.FC = () => {
                         I'm a passionate Software Engineer and student at the University of Virginia, specializing in creating seamless digital experiences. Let's build something amazing together.
                     </p>
 
-                    <div className="flex flex-col md:flex-row gap-4 mt-6">
+                    <div className="flex flex-col md:flex-row gap-4 mt-6 justify-evenly">
                         <a
                             href="https://drive.google.com/file/d/1Xv1mTfBa8JXecL5humVqRYjkMm1TVOjC/view?usp=sharing"
                             target="_blank"
