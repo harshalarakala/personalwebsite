@@ -21,7 +21,6 @@ yarn-error.log*
 node-node_modules
 .vscode/settings.json
 node_modules
-build
 static
 manifest.json
 mini-icon.ico
