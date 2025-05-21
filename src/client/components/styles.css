@@ -67,3 +67,28 @@
   transform: rotateX(-90deg) translateZ(100px);
   background-color: purple;
 }
+
+/* Custom styles for markdown content */
+.wmde-markdown {
+  background-color: transparent !important;
+}
+
+.wmde-markdown pre {
+  background-color: #f3f4f6 !important;
+}
+
+.wmde-markdown h1,
+.wmde-markdown h2,
+.wmde-markdown h3 {
+  color: #991b1b !important; /* Red 800, matching your theme */
+}
+
+.wmde-markdown p,
+.wmde-markdown li {
+  color: #374151 !important; /* Gray 700 */
+}
+
+.wmde-markdown blockquote {
+  background-color: #f3f4f6 !important;
+  border-left: 4px solid #991b1b !important;
+}

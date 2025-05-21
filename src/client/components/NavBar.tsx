@@ -14,7 +14,7 @@ const NavBar: React.FC = () => {
     const { state, dispatch } = context;
 
     const getTabClass = (section: string) => {
-        return `content-center text-center h-full cursor-pointer transition-transform duration-500 ease-in-out w-[250px] ${
+        return `content-center text-center h-full cursor-pointer transition-transform duration-500 ease-in-out ${
             state.currentSection === section
                 ? 'text-xl font-bold transform scale-[1.01] text-red-500'
                 : 'text-xl'
@@ -65,9 +65,7 @@ const NavBar: React.FC = () => {
     return (
         <div ref={scope}>
             {/* Toggle button for mobile */}
-            <div className="lg:hidden flex justify-end p-4 z-50">
-            <div className="lg:hidden flex justify-end p-4">
-            <div className="lg:hidden flex justify-end p-4 fixed top-4 right-4 z-50">
+            <div className="lg:hidden fixed top-4 right-4 z-50">
               <div
                   className="cursor-pointer"
                   onClick={() => setIsOpen(!isOpen)}
@@ -115,18 +113,16 @@ const NavBar: React.FC = () => {
               </div>
           </div>
 
-            </div>
-            </div>
             {/* Full-Screen Mobile Menu */}
             <nav
-                className={`lg:flex justify-center items-center lg:h-16 lg:backdrop-blur-lg lg:bg-white lg:relative ${
-                    isOpen ? 'fixed inset-0 bg-white z-50' : 'hidden lg:block'
+                className={`lg:flex justify-center items-center lg:h-16 lg:backdrop-blur-lg lg:bg-white/80 lg:relative fixed top-0 left-0 w-full z-40 ${
+                    isOpen ? 'flex bg-white z-40' : 'hidden'
                 }`}
                 style={isOpen ? { height: '100vh', width: '100vw', overflowY: 'auto' } : {}}
             >
-                <ul className="flex flex-col lg:flex-row justify-center items-center lg:space-x-8">
+                <ul className="flex flex-col lg:flex-row justify-center items-center lg:space-x-8 w-full">
                     <li
-                        className={`${getTabClass('overview')} min-h-[50px] leading-[1.5]`}
+                        className={`${getTabClass('overview')} w-full lg:w-auto py-4 lg:py-0`}
                         onClick={() => {
                             dispatch({ type: 'SET_SECTION', payload: 'overview' });
                             setIsOpen(false);
@@ -135,7 +131,7 @@ const NavBar: React.FC = () => {
                         Overview
                     </li>
                     <li
-                        className={`${getTabClass('experience')} min-h-[50px] leading-[1.5]`}
+                        className={`${getTabClass('experience')} w-full lg:w-auto py-4 lg:py-0`}
                         onClick={() => {
                             dispatch({ type: 'SET_SECTION', payload: 'experience' });
                             setIsOpen(false);
@@ -144,7 +140,7 @@ const NavBar: React.FC = () => {
                         Experience & Projects
                     </li>
                     <li
-                        className={`${getTabClass('skills')} min-h-[50px] leading-[1.5]`}
+                        className={`${getTabClass('skills')} w-full lg:w-auto py-4 lg:py-0`}
                         onClick={() => {
                             dispatch({ type: 'SET_SECTION', payload: 'skills' });
                             setIsOpen(false);
@@ -153,7 +149,7 @@ const NavBar: React.FC = () => {
                         Skills
                     </li>
                     <li
-                        className={`${getTabClass('contact')} min-h-[50px] leading-[1.5]`}
+                        className={`${getTabClass('contact')} w-full lg:w-auto py-4 lg:py-0`}
                         onClick={() => {
                             dispatch({ type: 'SET_SECTION', payload: 'contact' });
                             setIsOpen(false);

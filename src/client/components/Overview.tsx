@@ -40,11 +40,10 @@ const Overview: React.FC = () => {
     };
 
     return (
-        <section id="overview" className="relative min-h-screen bg-white text-black p-8 pb-24 overflow-hidden flex items-center justify-center">
-
-            <div className="flex flex-col self-center md:flex-row items-center md:items-start text-center md:text-left space-y-8 md:space-y-0 md:space-x-12 w-[60%]">
+        <section id="overview" className="relative min-h-screen bg-white text-black p-4 sm:p-6 md:p-8 pb-16 sm:pb-20 md:pb-24 overflow-hidden flex items-center justify-center">
+            <div className="flex flex-col self-center w-full max-w-screen-xl mx-auto md:flex-row items-center md:items-start text-center md:text-left space-y-8 md:space-y-0 md:space-x-8 lg:space-x-12 px-4 sm:px-6">
                 <motion.div
-                    className={`w-80 h-80 md:w-96 md:h-96 rounded-full overflow-hidden shadow-lg border-4 border-red-500 flex-shrink-0 ${animate ? 'animate-pulse-border' : ''}`}
+                    className={`w-48 h-48 sm:w-64 sm:h-64 md:w-72 md:h-72 lg:w-80 lg:h-80 xl:w-96 xl:h-96 rounded-full overflow-hidden shadow-lg border-4 border-red-500 flex-shrink-0 mx-auto md:mx-0 ${animate ? 'animate-pulse-border' : ''}`}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.8 }}
@@ -58,12 +57,12 @@ const Overview: React.FC = () => {
                 </motion.div>
 
                 <motion.div
-                    className="text-gray-900 p-6 flex-1"
+                    className="text-gray-900 p-2 sm:p-4 md:p-6 flex-1"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8 }}
                 >
-                    <h1 className="text-6xl md:text-6xl font-extrabold mb-4">
+                    <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-2 sm:mb-3 md:mb-4">
                         <span className={` ${animate ? 'animate-pulse-text' : ''}`}>Hi,</span> I'm Harshal Arakala
                     </h1>
                     <AnimatePresence mode="wait">
@@ -73,21 +72,21 @@ const Overview: React.FC = () => {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -10 }}
                             transition={{ duration: 0.8 }}
-                            className={`text-xl md:text-2xl font-semibold text-red-500`}
+                            className={`text-lg sm:text-xl md:text-2xl font-semibold text-red-500`}
                         >
                             {statements[currentStatement]}
                         </motion.p>
                     </AnimatePresence>
-                    <p className="text-lg md:text-xl text-gray-700 mt-4">
+                    <p className="text-base sm:text-lg md:text-xl text-gray-700 mt-3 md:mt-4">
                         I'm a passionate Software Engineer and student at the University of Virginia, specializing in creating seamless digital experiences. Let's build something amazing together.
                     </p>
 
-                    <div className="flex flex-col md:flex-row gap-4 mt-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mt-4 sm:mt-5 md:mt-6">
                         <a
                             href="https://drive.google.com/file/d/1Xv1mTfBa8JXecL5humVqRYjkMm1TVOjC/view?usp=sharing"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={`flex items-center justify-center px-6 py-3 bg-red-500 text-white font-bold rounded-lg shadow-lg border-4 border-red-500 ${animate ? 'animate-pulse-border' : ''} hover:bg-red-600 transition duration-200`}
+                            className={`flex items-center justify-center px-4 sm:px-5 py-2 sm:py-3 bg-red-500 text-white font-bold rounded-lg shadow-lg border-2 sm:border-4 border-red-500 ${animate ? 'animate-pulse-border' : ''} hover:bg-red-600 transition duration-200`}
                         >
                             <FaFileDownload className="mr-2" />
                             Resume
@@ -97,14 +96,14 @@ const Overview: React.FC = () => {
                             href="https://drive.google.com/file/d/1-hgzf2SoU1tZBXIe706HUfJAmr_XoSx3/view?usp=sharing"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={`flex items-center justify-center px-6 py-3 bg-red-500 text-white font-bold rounded-lg shadow-lg border-4 border-red-500 ${animate ? 'animate-pulse-border' : ''} hover:bg-red-600 transition duration-200`}
+                            className={`flex items-center justify-center px-4 sm:px-5 py-2 sm:py-3 bg-red-500 text-white font-bold rounded-lg shadow-lg border-2 sm:border-4 border-red-500 ${animate ? 'animate-pulse-border' : ''} hover:bg-red-600 transition duration-200`}
                         >
                             <FaFileDownload className="mr-2" />
                             Transcript
                         </a>
 
                         <motion.button
-                            className={`flex items-center justify-center px-6 py-3 bg-red-500 text-white font-bold rounded-lg shadow-lg border-4 border-red-500 ${animate ? 'animate-pulse-border' : ''} hover:bg-red-600 transition duration-200`}
+                            className={`flex items-center justify-center px-4 sm:px-5 py-2 sm:py-3 bg-red-500 text-white font-bold rounded-lg shadow-lg border-2 sm:border-4 border-red-500 ${animate ? 'animate-pulse-border' : ''} hover:bg-red-600 transition duration-200`}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => handleNavigate('experience')}
@@ -114,7 +113,7 @@ const Overview: React.FC = () => {
                         </motion.button>
 
                         <motion.button
-                            className={`flex items-center justify-center px-6 py-3 bg-red-500 text-white font-bold rounded-lg shadow-lg border-4 border-red-500 ${animate ? 'animate-pulse-border' : ''} hover:bg-red-600 transition duration-200`}
+                            className={`flex items-center justify-center px-4 sm:px-5 py-2 sm:py-3 bg-red-500 text-white font-bold rounded-lg shadow-lg border-2 sm:border-4 border-red-500 ${animate ? 'animate-pulse-border' : ''} hover:bg-red-600 transition duration-200`}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => handleNavigate('contact')}
