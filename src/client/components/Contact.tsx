@@ -145,7 +145,7 @@ const Contact: React.FC = () => {
   };
 
   return (
-    <div className="relative">
+    <div className="relative py-8 w-full h-full flex items-center justify-center">
       {/* Falling Animation Background */}
       <div className="falling-container blur-sm -z-50">
         {Array.from({ length: 1 }).map((_, i) => (
@@ -161,7 +161,7 @@ const Contact: React.FC = () => {
       </div>
   
       {/* Contact Form */}
-      <div className="max-w-md mx-auto mt-10 p-4 border border-gray-300 shadow-md rounded-lg bg-slate-200 z-40">
+      <div className="max-w-md mx-auto p-4 border border-gray-300 shadow-md rounded-lg bg-slate-200 z-40">
         <p className="mb-4">
           I'd love to hear from you! Whether you have a question, want to collaborate on a project, or just want to say what's up, feel free to reach out.
         </p>

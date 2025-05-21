@@ -47,9 +47,9 @@ const skillsData = [
 
 const Skills: React.FC = () => {
   return (
-    <div className="max-w-6xl mx-auto p-6">
+    <div className="max-w-6xl mx-auto p-6 py-8 w-full h-full flex flex-col justify-center">
       {skillsData.map((categoryData, categoryIndex) => (
-        <div key={categoryIndex} className="mb-12">
+        <div key={categoryIndex} className="mb-8">
           <h3 className="text-2xl font-semibold mb-4">{categoryData.category}</h3>
           <SkillCarousel items={categoryData.items} />
         </div>

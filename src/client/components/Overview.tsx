@@ -40,7 +40,7 @@ const Overview: React.FC = () => {
     };
 
     return (
-        <section id="overview" className="relative min-h-screen bg-white text-black p-4 sm:p-6 md:p-8 pb-16 sm:pb-20 md:pb-24 overflow-hidden flex items-center justify-center">
+        <section id="overview" className="relative bg-white text-black p-4 sm:p-6 md:p-8 pb-16 sm:pb-20 md:pb-24 overflow-hidden flex items-center justify-center w-full h-full">
             <div className="flex flex-col self-center w-full max-w-screen-xl mx-auto md:flex-row items-center md:items-start text-center md:text-left space-y-8 md:space-y-0 md:space-x-8 lg:space-x-12 px-4 sm:px-6">
                 <motion.div
                     className={`w-48 h-48 sm:w-64 sm:h-64 md:w-72 md:h-72 lg:w-80 lg:h-80 xl:w-96 xl:h-96 rounded-full overflow-hidden shadow-lg border-4 border-red-500 flex-shrink-0 mx-auto md:mx-0 ${animate ? 'animate-pulse-border' : ''}`}

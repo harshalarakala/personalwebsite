@@ -11,11 +11,11 @@ const App: React.FC = () => {
   return (
     <GoogleOAuthProvider clientId="195786252954-j2p1t5tceicbnnocri51jospice15f99.apps.googleusercontent.com">
       <SectionProvider>
-        <div className='h-screen'>
+        <div className='min-h-screen flex flex-col'>
           <header className="App-header">
             <NavBar />
           </header>
-          <main className='h-full'>
+          <main className='pt-16 flex-grow flex items-center justify-center'>
             <SectionRenderer />
           </main>
         </div>
