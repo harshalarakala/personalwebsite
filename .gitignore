@@ -23,3 +23,6 @@ node-node_modules
 node_modules
 build
 static
+manifest.json
+mini-icon.ico
+robots.txt
