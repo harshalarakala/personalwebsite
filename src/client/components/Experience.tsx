@@ -143,6 +143,25 @@ const ExperienceComponent: React.FC = () => {
   // Add error state
   const [error, setError] = useState<string | null>(null);
   
+  // Add state to track screen size
+  const [isLargeScreen, setIsLargeScreen] = useState(false);
+
+  // Check screen size on mount and window resize
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsLargeScreen(window.innerWidth >= 1024); // lg breakpoint is 1024px
+    };
+    
+    // Check on mount
+    checkScreenSize();
+    
+    // Add listener for resize
+    window.addEventListener('resize', checkScreenSize);
+    
+    // Cleanup
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
+
   // Fetch data from Firebase on component mount
   useEffect(() => {
     const fetchData = async () => {
@@ -169,10 +188,12 @@ const ExperienceComponent: React.FC = () => {
         setExperiencesData(experiences);
         setProjectsData(projects);
         
-        // Set current index if data is available
-        if ((view === 'experiences' && experiences.length > 0) || 
-            (view === 'projects' && projects.length > 0)) {
-          setCurrentIndex(0);
+        // Only auto-set currentIndex on large screens
+        if (isLargeScreen) {
+          if ((view === 'experiences' && experiences.length > 0) || 
+              (view === 'projects' && projects.length > 0)) {
+            setCurrentIndex(0);
+          }
         }
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -194,10 +215,12 @@ const ExperienceComponent: React.FC = () => {
         setExperiencesData(localExperiences);
         setProjectsData(localProjects);
         
-        // Set current index if data is available
-        if ((view === 'experiences' && localExperiences.length > 0) || 
-            (view === 'projects' && localProjects.length > 0)) {
-          setCurrentIndex(0);
+        // Only auto-set currentIndex on large screens
+        if (isLargeScreen) {
+          if ((view === 'experiences' && localExperiences.length > 0) || 
+              (view === 'projects' && localProjects.length > 0)) {
+            setCurrentIndex(0);
+          }
         }
       } finally {
         setIsLoading(false);
@@ -210,7 +233,7 @@ const ExperienceComponent: React.FC = () => {
     return () => {
       document.body.style.overflow = 'auto';
     };
-  }, [showArchived, view]);
+  }, [showArchived, view, isLargeScreen]);
 
   useEffect(() => {
     if (itemRefs.current.length !== sortedData.length) {
@@ -229,6 +252,21 @@ const ExperienceComponent: React.FC = () => {
         const dateB = parseStartDate(b.duration);
         return sortByDate === 'asc' ? dateA.getTime() - dateB.getTime() : dateB.getTime() - dateA.getTime();
       });
+
+  // Move the order of these useEffects to avoid using sortedData before declaration
+  
+  // Reset currentIndex or set it based on screen size when view changes
+  useEffect(() => {
+    if (isLargeScreen) {
+      // Auto-select first item on large screens
+      if (sortedData && sortedData.length > 0) {
+        setCurrentIndex(0);
+      }
+    } else {
+      // Reset to no selected item on mobile/medium screens
+      setCurrentIndex(-1);
+    }
+  }, [view, isLargeScreen, sortedData]);
 
   // Ensure currentIndex is valid
   useEffect(() => {
@@ -876,7 +914,7 @@ const ExperienceComponent: React.FC = () => {
               }`}
               onClick={() => {
                 setView('experiences');
-                setCurrentIndex(0);
+                // Only auto-select on large screens, otherwise handled by useEffect
                 setIsEditing(false);
               }}
               aria-label="Show experiences"
@@ -889,7 +927,7 @@ const ExperienceComponent: React.FC = () => {
               }`}
               onClick={() => {
                 setView('projects');
-                setCurrentIndex(0);
+                // Only auto-select on large screens, otherwise handled by useEffect
                 setIsEditing(false);
               }}
               aria-label="Show projects"
