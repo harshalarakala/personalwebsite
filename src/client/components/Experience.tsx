@@ -235,12 +235,6 @@ const ExperienceComponent: React.FC = () => {
     };
   }, [showArchived, view, isLargeScreen]);
 
-  useEffect(() => {
-    if (itemRefs.current.length !== sortedData.length) {
-      itemRefs.current = new Array(sortedData.length).fill(null);
-    }
-  }, [view, sortByDate]);
-
   const sortedData = view === 'experiences' 
     ? (experiencesData || []).sort((a, b) => {
         const dateA = parseStartDate(a.duration);
@@ -253,7 +247,12 @@ const ExperienceComponent: React.FC = () => {
         return sortByDate === 'asc' ? dateA.getTime() - dateB.getTime() : dateB.getTime() - dateA.getTime();
       });
 
-  // Move the order of these useEffects to avoid using sortedData before declaration
+  // useEffect to update itemRefs when sortedData length changes
+  useEffect(() => {
+    if (itemRefs.current.length !== sortedData.length) {
+      itemRefs.current = new Array(sortedData.length).fill(null);
+    }
+  }, [view, sortByDate, sortedData.length]);
   
   // Reset currentIndex or set it based on screen size when view changes
   useEffect(() => {
