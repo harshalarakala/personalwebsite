@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import MDEditor from '@uiw/react-md-editor';
 import { User } from 'firebase/auth';
-import { signInWithGoogle, signOut, onAuthChange, isAuthorizedEditor } from '../services/authService';
+import { onAuthChange, isAuthorizedEditor } from '../services/authService';
 import { Experience as ExperienceType, getItems, createItem, updateItem, deleteItem } from '../services/experienceService';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -131,29 +131,6 @@ const Projects: React.FC = () => {
     return () => unsubscribe();
   }, []);
 
-  const handleLoginSuccess = async () => {
-    try {
-      const result = await signInWithGoogle();
-      if (result && result.isAuthorized) {
-        setIsAuthenticated(true);
-        setUserData(result.user);
-      } else {
-        console.log("Unauthorized user attempted to login");
-      }
-    } catch (error) {
-      console.error("Error during login:", error);
-    }
-  };
-
-  const handleLogout = async () => {
-    try {
-      await signOut();
-      setIsAuthenticated(false);
-      setUserData(null);
-    } catch (error) {
-      console.error("Error during logout:", error);
-    }
-  };
 
   useEffect(() => {
     (async () => {
@@ -361,26 +338,6 @@ const Projects: React.FC = () => {
               >
                 + New Project
               </button>
-            )}
-          </div>
-          <div className="flex items-center gap-3">
-            {!isAuthenticated ? (
-              <button
-                onClick={handleLoginSuccess}
-                className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
-              >
-                Sign in
-              </button>
-            ) : (
-              <>
-                <span className="text-sm text-gray-600">{userData?.email}</span>
-                <button
-                  onClick={handleLogout}
-                  className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
-                >
-                  Sign out
-                </button>
-              </>
             )}
           </div>
         </div>

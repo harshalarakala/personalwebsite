@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { experiences as initialExperiences } from './data';
 import MDEditor from '@uiw/react-md-editor';
 import { User } from 'firebase/auth';
-import { signInWithGoogle, signOut, onAuthChange, isAuthorizedEditor } from '../services/authService';
+import { onAuthChange, isAuthorizedEditor } from '../services/authService';
 import { Experience as ExperienceType, getItems, createItem, updateItem, toggleArchiveItem, deleteItem, seedInitialData } from '../services/experienceService';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -404,32 +404,6 @@ const ExperienceComponent: React.FC<ExperienceComponentProps> = ({ mode }) => {
     setShowArchived(!showArchived);
   };
 
-  const handleLoginSuccess = async () => {
-    try {
-      const result = await signInWithGoogle();
-      if (result && result.isAuthorized) {
-        setIsAuthenticated(true);
-        setUserData(result.user);
-      } else {
-        console.log("Unauthorized user attempted to login");
-      }
-    } catch (error) {
-      console.error("Error during login:", error);
-    }
-  };
-
-  const handleLogout = async () => {
-    try {
-      await signOut();
-      setIsAuthenticated(false);
-      setUserData(null);
-      setIsEditing(false);
-      setIsCreating(false);
-    } catch (error) {
-      console.error("Error during logout:", error);
-    }
-  };
-
   const handleEditClick = () => {
     setIsEditing(true);
     setEditContent(sortedData[currentIndex].fullDescription);
@@ -767,36 +741,12 @@ const ExperienceComponent: React.FC<ExperienceComponentProps> = ({ mode }) => {
     <div className="w-full h-screen flex flex-col lg:flex-row overflow-hidden bg-white">
       {/* Highlighted Item - hidden on mobile and medium screens */}
       <div className="hidden lg:flex flex-1 flex-col pt-4 sm:pt-6 lg:pt-8 bg-white overflow-y-auto relative mb-6 sm:mb-8 lg:mb-20 lg:ml-10">
-        {/* Authentication Section */}
-        <div className="absolute top-2 sm:top-3 lg:top-4 right-2 sm:right-3 lg:right-4 z-50 flex flex-col sm:flex-row items-end sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
-          {!isAuthenticated ? (
-            <button 
-              onClick={handleLoginSuccess}
-              className="hidden lg:flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
-              aria-label="Login with Google"
-            >
-              <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12.2461 14V10H19.8701C20.0217 10.544 20.1217 11.022 20.1217 11.58C20.1217 16.128 16.9143 19 12.2461 19C8.12574 19 4.74611 15.6196 4.74611 11.5C4.74611 7.38037 8.12574 4 12.2461 4C14.1959 4 15.9272 4.76394 17.2077 6.02332L14.4445 8.67553C13.8908 8.14129 13.1263 7.73255 12.2461 7.73255C10.1578 7.73255 8.47869 9.42343 8.47869 11.5C8.47869 13.5766 10.1578 15.2675 12.2461 15.2675C13.8958 15.2675 15.0856 14.3951 15.499 13.17H12.2461V14Z" fill="currentColor"/>
-              </svg>
-              Sign in
-            </button>
-          ) : (
-            <div className="hidden lg:flex items-center gap-3">
-              <span className="text-sm text-gray-600">{userData?.email}</span>
-              <button
-                onClick={handleLogout}
-                className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
-                aria-label="Logout"
-              >
-                Sign out
-              </button>
-            </div>
-          )}
-          
-          {isAuthenticated && (
+        {/* Show Archived Toggle - Only visible when authenticated */}
+        {isAuthenticated && (
+          <div className="absolute top-2 sm:top-3 lg:top-4 right-2 sm:right-3 lg:right-4 z-50">
             <button
               onClick={handleToggleArchived}
-              className={`hidden lg:inline-flex items-center justify-center rounded-md border px-4 py-2 text-sm font-medium transition-colors shadow-sm ${
+              className={`inline-flex items-center justify-center rounded-md border px-4 py-2 text-sm font-medium transition-colors shadow-sm ${
                 showArchived 
                   ? 'border-purple-300 bg-purple-50 text-purple-700 hover:bg-purple-100' 
                   : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
@@ -805,8 +755,8 @@ const ExperienceComponent: React.FC<ExperienceComponentProps> = ({ mode }) => {
             >
               {showArchived ? "Hide Archived" : "Show Archived"}
             </button>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Floating Navigation Bar - Adjusted for better mobile positioning */}
         <div className="fixed bottom-2 sm:bottom-3 lg:bottom-[2.5rem] left-2 sm:left-3 lg:left-[4rem] bg-white border border-gray-200 shadow-lg p-2 sm:p-3 lg:p-4 rounded-lg flex justify-between gap-2 w-36 sm:w-40 lg:w-48 z-50">

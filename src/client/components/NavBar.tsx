@@ -1,17 +1,59 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { AppContext } from '../context/AppContext';
 import { useAnimate, stagger } from 'framer-motion';
+import { User } from 'firebase/auth';
+import { signInWithGoogle, signOut, onAuthChange, isAuthorizedEditor } from '../services/authService';
 
 const NavBar: React.FC = () => {
     const context = useContext(AppContext);
     const [isOpen, setIsOpen] = useState(false);
     const [scope, animate] = useAnimate();
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [userData, setUserData] = useState<User | null>(null);
 
     if (!context) {
         throw new Error('NavBar must be used within a SectionProvider');
     }
 
     const { state, dispatch } = context;
+
+    // Listen to authentication state changes
+    useEffect(() => {
+        const unsubscribe = onAuthChange((user) => {
+            if (user && isAuthorizedEditor(user)) {
+                setIsAuthenticated(true);
+                setUserData(user);
+            } else {
+                setIsAuthenticated(false);
+                setUserData(null);
+            }
+        });
+        return () => unsubscribe();
+    }, []);
+
+    const handleLoginSuccess = async () => {
+        try {
+            const result = await signInWithGoogle();
+            if (result && result.isAuthorized) {
+                setIsAuthenticated(true);
+                setUserData(result.user);
+            } else {
+                console.log("Unauthorized user attempted to login");
+            }
+        } catch (error) {
+            console.error("Error during login:", error);
+        }
+    };
+
+    const handleLogout = async () => {
+        try {
+            await signOut();
+            setIsAuthenticated(false);
+            setUserData(null);
+        } catch (error) {
+            console.error("Error during logout:", error);
+        }
+    };
 
     const getTabClass = (section: string) => {
         const isActive = state.currentSection === section;
@@ -98,6 +140,33 @@ const NavBar: React.FC = () => {
                     isOpen ? 'flex bg-white h-screen w-screen overflow-y-auto' : 'hidden lg:flex'
                 }`}
             >
+                {/* Authentication Section - Top Right */}
+                <div className="absolute top-4 right-4 z-50 flex items-center gap-3 hidden lg:flex">
+                    {!isAuthenticated ? (
+                        <button 
+                            onClick={handleLoginSuccess}
+                            className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+                            aria-label="Login with Google"
+                        >
+                            <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12.2461 14V10H19.8701C20.0217 10.544 20.1217 11.022 20.1217 11.58C20.1217 16.128 16.9143 19 12.2461 19C8.12574 19 4.74611 15.6196 4.74611 11.5C4.74611 7.38037 8.12574 4 12.2461 4C14.1959 4 15.9272 4.76394 17.2077 6.02332L14.4445 8.67553C13.8908 8.14129 13.1263 7.73255 12.2461 7.73255C10.1578 7.73255 8.47869 9.42343 8.47869 11.5C8.47869 13.5766 10.1578 15.2675 12.2461 15.2675C13.8958 15.2675 15.0856 14.3951 15.499 13.17H12.2461V14Z" fill="currentColor"/>
+                            </svg>
+                            Sign in
+                        </button>
+                    ) : (
+                        <div className="flex items-center gap-3">
+                            <span className="text-sm text-gray-600 hidden xl:inline">{userData?.email}</span>
+                            <button
+                                onClick={handleLogout}
+                                className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+                                aria-label="Logout"
+                            >
+                                Sign out
+                            </button>
+                        </div>
+                    )}
+                </div>
+
                 <ul className="flex flex-col lg:flex-row justify-center items-center w-full">
                     <li
                         className={`${getTabClass('overview')} w-full lg:w-auto py-4 lg:py-0 lg:pl-4 lg:pr-8 lg:hover:bg-gray-50 lg:rounded-md transition-colors`}

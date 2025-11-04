@@ -125,11 +125,25 @@ const Contact: React.FC = () => {
         draggable: true,
         progress: undefined,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to send email:', error);
-      toast.error('Failed to send email.', {
+      
+      // Check for specific EmailJS error codes
+      let errorMessage = 'Failed to send email. Please try again later.';
+      
+      if (error?.status === 412 || error?.text?.includes('Invalid grant') || error?.text?.includes('reconnect')) {
+        errorMessage = 'Email service needs to be reconnected. Please contact the site administrator.';
+      } else if (error?.status === 400) {
+        errorMessage = 'Invalid email format. Please check your email address.';
+      } else if (error?.status === 403) {
+        errorMessage = 'Email service is temporarily unavailable. Please try again later.';
+      } else if (error?.status === 500) {
+        errorMessage = 'Email service error. Please try again later.';
+      }
+      
+      toast.error(errorMessage, {
         position: "top-right",
-        autoClose: 3000,
+        autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
