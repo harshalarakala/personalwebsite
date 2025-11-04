@@ -122,7 +122,16 @@ const NavBar: React.FC = () => {
                             setIsOpen(false);
                         }}
                     >
-                        Experience & Projects
+                        Experiences
+                    </li>
+                    <li
+                        className={`${getTabClass('projects')} w-full lg:w-auto py-4 lg:py-0`}
+                        onClick={() => {
+                            dispatch({ type: 'SET_SECTION', payload: 'projects' });
+                            setIsOpen(false);
+                        }}
+                    >
+                        Projects
                     </li>
                     <li
                         className={`${getTabClass('skills')} w-full lg:w-auto py-4 lg:py-0`}
@@ -142,19 +151,7 @@ const NavBar: React.FC = () => {
                     >
                         Contact
                     </li>
-                    <li className="w-full lg:w-auto py-4 lg:py-0 flex justify-center lg:justify-start">
-                        <a
-                            href="https://utilities.harshalarakala.com"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="lg:inline-flex lg:items-center lg:gap-2 lg:px-4 lg:py-2 lg:bg-gradient-to-r lg:from-blue-600 lg:to-purple-600 lg:hover:from-blue-700 lg:hover:to-purple-700 lg:text-white lg:rounded-lg lg:shadow-lg lg:hover:shadow-xl lg:transition-all lg:duration-300 lg:transform lg:hover:scale-105 lg:border-2 lg:border-white/20 lg:backdrop-blur-sm w-full text-center text-xl py-4 lg:py-0 text-black hover:underline hover:text-red-500 transition-all duration-300"
-                        >
-                            <svg className="hidden lg:block w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                            </svg>
-                            <span className="font-medium">My Tools</span>
-                        </a>
-                    </li>
+                    
                 </ul>
             </nav>
         </div>

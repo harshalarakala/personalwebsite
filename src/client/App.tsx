@@ -3,6 +3,7 @@ import NavBar from './components/NavBar';
 import { SectionProvider, AppContext } from './context/AppContext';
 import Overview from './components/Overview';
 import Experience from './components/Experience';
+import Projects from './components/Projects';
 import Skills from './components/Skills';
 import Contact from './components/Contact';
 import { GoogleOAuthProvider } from '@react-oauth/google';
@@ -39,6 +40,8 @@ const SectionRenderer: React.FC = () => {
         return <Overview />;
       case 'experience':
         return <Experience />;
+      case 'projects':
+        return <Projects />;
       case 'skills':
         return <Skills />;
       case 'contact':

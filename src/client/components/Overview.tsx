@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { AppContext } from '../context/AppContext';
 import profileImage from '../images/profile.jpeg';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaFileDownload, FaBriefcase, FaPhone } from 'react-icons/fa';
+import { FaFileDownload, FaBriefcase, FaPhone, FaGithub, FaLinkedin } from 'react-icons/fa';
 import './CubeStyles.css';
 
 const Overview: React.FC = () => {
@@ -114,6 +114,36 @@ const Overview: React.FC = () => {
 
                         <motion.button
                             className={`flex items-center justify-center px-4 sm:px-5 py-2 sm:py-3 bg-red-500 text-white font-bold rounded-lg shadow-lg border-2 sm:border-4 border-red-500 ${animate ? 'animate-pulse-border' : ''} hover:bg-red-600 transition duration-200`}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => handleNavigate('projects')}
+                        >
+                            <FaBriefcase className="mr-2" />
+                            Projects
+                        </motion.button>
+
+                        <a
+                            href="https://github.com/harshalarakala"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`flex items-center justify-center px-4 sm:px-5 py-2 sm:py-3 bg-gray-900 text-white font-bold rounded-lg shadow-lg border-2 sm:border-4 border-gray-900 ${animate ? 'animate-pulse-border' : ''} hover:bg-black transition duration-200`}
+                        >
+                            <FaGithub className="mr-2" />
+                            GitHub
+                        </a>
+
+                        <a
+                            href="https://www.linkedin.com/in/harshalarakala"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`flex items-center justify-center px-4 sm:px-5 py-2 sm:py-3 bg-blue-600 text-white font-bold rounded-lg shadow-lg border-2 sm:border-4 border-blue-600 ${animate ? 'animate-pulse-border' : ''} hover:bg-blue-700 transition duration-200`}
+                        >
+                            <FaLinkedin className="mr-2" />
+                            LinkedIn
+                        </a>
+
+                        <motion.button
+                            className={`flex items-center justify-center px-4 sm:px-5 py-2 sm:py-3 bg-gray-200 text-gray-900 font-bold rounded-lg shadow-lg border-2 sm:border-4 border-gray-300 ${animate ? 'animate-pulse-border' : ''} hover:bg-gray-300 transition duration-200`}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => handleNavigate('contact')}

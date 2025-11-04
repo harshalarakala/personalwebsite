@@ -20,6 +20,7 @@ export interface Experience {
   fullDescription: string;
   briefDescription: string;
   location?: string | null;
+  link?: string | null;
   archived?: boolean;
   type: 'experience' | 'project';
   createdAt?: Timestamp;
