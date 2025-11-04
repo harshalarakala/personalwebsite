@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { AppContext } from '../context/AppContext';
 import profileImage from '../images/profile.jpeg';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaFileDownload, FaBriefcase, FaPhone, FaGithub, FaLinkedin } from 'react-icons/fa';
+import { FaFileDownload, FaBriefcase, FaPhone, FaGithub, FaLinkedin, FaCode } from 'react-icons/fa';
 import './CubeStyles.css';
 
 const Overview: React.FC = () => {
@@ -37,6 +37,16 @@ const Overview: React.FC = () => {
 
     const handleNavigate = (path: string) => {
         dispatch({ type: 'SET_SECTION', payload: path });
+    };
+
+    // Mouse tracking for liquid glass effect
+    const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+        const element = e.currentTarget;
+        const rect = element.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        element.style.setProperty('--mouse-x', `${x}%`);
+        element.style.setProperty('--mouse-y', `${y}%`);
     };
 
     return (
@@ -86,7 +96,12 @@ const Overview: React.FC = () => {
                             href="https://drive.google.com/file/d/1Xv1mTfBa8JXecL5humVqRYjkMm1TVOjC/view?usp=sharing"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+                            onMouseMove={handleMouseMove}
+                            className="liquid-glass-button liquid-glass-dark inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white"
+                            style={{ 
+                                background: 'rgba(17, 24, 39, 0.8)', 
+                                borderColor: 'rgba(17, 24, 39, 0.6)' 
+                            } as React.CSSProperties}
                         >
                             <FaFileDownload className="mr-2" />
                             Resume
@@ -96,37 +111,72 @@ const Overview: React.FC = () => {
                             href="https://drive.google.com/file/d/1-hgzf2SoU1tZBXIe706HUfJAmr_XoSx3/view?usp=sharing"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+                            onMouseMove={handleMouseMove}
+                            className="liquid-glass-button liquid-glass-dark inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white"
+                            style={{ 
+                                background: 'rgba(17, 24, 39, 0.8)', 
+                                borderColor: 'rgba(17, 24, 39, 0.6)' 
+                            } as React.CSSProperties}
                         >
                             <FaFileDownload className="mr-2" />
                             Transcript
                         </a>
 
                         <motion.button
-                            className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+                            className="liquid-glass-button liquid-glass-dark inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white"
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
+                            onMouseMove={handleMouseMove}
                             onClick={() => handleNavigate('experience')}
+                            style={{ 
+                                background: 'rgba(17, 24, 39, 0.8)', 
+                                borderColor: 'rgba(17, 24, 39, 0.6)' 
+                            } as React.CSSProperties}
                         >
                             <FaBriefcase className="mr-2" />
                             Experiences
                         </motion.button>
 
                         <motion.button
-                            className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+                            className="liquid-glass-button liquid-glass-dark inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white"
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
+                            onMouseMove={handleMouseMove}
                             onClick={() => handleNavigate('projects')}
+                            style={{ 
+                                background: 'rgba(17, 24, 39, 0.8)', 
+                                borderColor: 'rgba(17, 24, 39, 0.6)' 
+                            } as React.CSSProperties}
                         >
                             <FaBriefcase className="mr-2" />
                             Projects
+                        </motion.button>
+
+                        <motion.button
+                            className="liquid-glass-button liquid-glass-orange inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white"
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            onMouseMove={handleMouseMove}
+                            onClick={() => handleNavigate('skills')}
+                            style={{ 
+                                background: 'rgba(251, 146, 60, 0.8)', 
+                                borderColor: 'rgba(251, 146, 60, 0.6)' 
+                            } as React.CSSProperties}
+                        >
+                            <FaCode className="mr-2" />
+                            Skills
                         </motion.button>
 
                         <a
                             href="https://github.com/harshalarakala"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center justify-center rounded-md bg-gray-900 hover:bg-black px-4 py-2 text-sm font-medium text-white transition-colors shadow-sm"
+                            onMouseMove={handleMouseMove}
+                            className="liquid-glass-button liquid-glass-gray inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white"
+                            style={{ 
+                                background: 'rgba(107, 114, 128, 0.8)', 
+                                borderColor: 'rgba(107, 114, 128, 0.6)' 
+                            } as React.CSSProperties}
                         >
                             <FaGithub className="mr-2" />
                             GitHub
@@ -136,17 +186,27 @@ const Overview: React.FC = () => {
                             href="https://www.linkedin.com/in/harshalarakala"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center justify-center rounded-md border border-blue-300 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 hover:bg-blue-100 transition-colors shadow-sm"
+                            onMouseMove={handleMouseMove}
+                            className="liquid-glass-button liquid-glass-blue inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-blue-700"
+                            style={{ 
+                                background: 'rgba(59, 130, 246, 0.15)', 
+                                borderColor: 'rgba(59, 130, 246, 0.3)' 
+                            } as React.CSSProperties}
                         >
                             <FaLinkedin className="mr-2" />
                             LinkedIn
                         </a>
 
                         <motion.button
-                            className="inline-flex items-center justify-center rounded-md bg-green-600 hover:bg-green-700 px-4 py-2 text-sm font-medium text-white transition-colors shadow-sm"
+                            className="liquid-glass-button liquid-glass-green inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white"
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
+                            onMouseMove={handleMouseMove}
                             onClick={() => handleNavigate('contact')}
+                            style={{ 
+                                background: 'rgba(22, 163, 74, 0.8)', 
+                                borderColor: 'rgba(22, 163, 74, 0.6)' 
+                            } as React.CSSProperties}
                         >
                             <FaPhone className="mr-2" />
                             Get in Touch

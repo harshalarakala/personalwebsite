@@ -55,12 +55,22 @@ const NavBar: React.FC = () => {
         }
     };
 
+    // Mouse tracking for liquid glass effect
+    const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
+        const button = e.currentTarget;
+        const rect = button.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        button.style.setProperty('--mouse-x', `${x}%`);
+        button.style.setProperty('--mouse-y', `${y}%`);
+    };
+
     const getTabClass = (section: string) => {
         const isActive = state.currentSection === section;
         return `relative content-center text-center h-full cursor-pointer transition-all duration-200 ${
             isActive
-                ? 'text-sm font-semibold text-gray-900'
-                : 'text-sm font-medium text-gray-600'
+                ? 'text-base font-semibold text-gray-900'
+                : 'text-base font-medium text-gray-600'
         }${!isActive ? ' hover:text-gray-900' : ''}`;
     };
 
@@ -136,16 +146,17 @@ const NavBar: React.FC = () => {
 
             {/* Full-Screen Mobile Menu */}
             <nav
-                className={`fixed top-0 left-0 w-full z-40 lg:flex lg:justify-center lg:items-center lg:h-16 lg:bg-white/95 lg:backdrop-blur-sm lg:border-b lg:border-gray-200 lg:shadow-sm ${
+                className={`fixed top-0 left-0 w-full z-40 lg:flex lg:justify-center lg:items-center lg:h-16 lg:bg-white lg:border-b lg:border-gray-200 lg:shadow-sm ${
                     isOpen ? 'flex bg-white h-screen w-screen overflow-y-auto' : 'hidden lg:flex'
                 }`}
             >
                 {/* Authentication Section - Top Right */}
-                <div className="absolute top-4 right-4 z-50 flex items-center gap-3 hidden lg:flex">
+                <div className="absolute top-4 right-4 z-50 flex items-center gap-2 hidden lg:flex">
                     {!isAuthenticated ? (
                         <button 
                             onClick={handleLoginSuccess}
-                            className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+                            onMouseMove={handleMouseMove}
+                            className="liquid-glass-button inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700"
                             aria-label="Login with Google"
                         >
                             <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -154,11 +165,12 @@ const NavBar: React.FC = () => {
                             Sign in
                         </button>
                     ) : (
-                        <div className="flex items-center gap-3">
-                            <span className="text-sm text-gray-600 hidden xl:inline">{userData?.email}</span>
+                        <div className="flex items-center gap-2">
+                            <span className="text-xs text-gray-600 hidden xl:inline max-w-[200px] truncate">{userData?.email}</span>
                             <button
                                 onClick={handleLogout}
-                                className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+                                onMouseMove={handleMouseMove}
+                                className="liquid-glass-button inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700"
                                 aria-label="Logout"
                             >
                                 Sign out
@@ -169,63 +181,83 @@ const NavBar: React.FC = () => {
 
                 <ul className="flex flex-col lg:flex-row justify-center items-center w-full">
                     <li
-                        className={`${getTabClass('overview')} w-full lg:w-auto py-4 lg:py-0 lg:pl-4 lg:pr-8 lg:hover:bg-gray-50 lg:rounded-md transition-colors`}
+                        className={`${getTabClass('overview')} w-full lg:w-auto py-4 lg:py-0 lg:pl-4 lg:pr-8 transition-colors`}
                         onClick={() => {
                             dispatch({ type: 'SET_SECTION', payload: 'overview' });
                             setIsOpen(false);
                         }}
                     >
-                        <span className="relative z-10">Overview</span>
-                        {state.currentSection === 'overview' && (
-                            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-900 rounded-full lg:block hidden"></span>
-                        )}
+                        Overview
                     </li>
                     <li
-                        className={`${getTabClass('experience')} w-full lg:w-auto py-4 lg:py-0 lg:pl-4 lg:pr-8 lg:hover:bg-gray-50 lg:rounded-md transition-colors`}
+                        className={`${getTabClass('experience')} w-full lg:w-auto py-4 lg:py-0 lg:pl-4 lg:pr-8 transition-colors`}
                         onClick={() => {
                             dispatch({ type: 'SET_SECTION', payload: 'experience' });
                             setIsOpen(false);
                         }}
                     >
-                        <span className="relative z-10">Experiences</span>
-                        {state.currentSection === 'experience' && (
-                            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-900 rounded-full lg:block hidden"></span>
-                        )}
+                        Experiences
                     </li>
                     <li
-                        className={`${getTabClass('projects')} w-full lg:w-auto py-4 lg:py-0 lg:pl-4 lg:pr-8 lg:hover:bg-gray-50 lg:rounded-md transition-colors`}
+                        className={`${getTabClass('projects')} w-full lg:w-auto py-4 lg:py-0 lg:pl-4 lg:pr-8 transition-colors`}
                         onClick={() => {
                             dispatch({ type: 'SET_SECTION', payload: 'projects' });
                             setIsOpen(false);
                         }}
                     >
-                        <span className="relative z-10">Projects</span>
-                        {state.currentSection === 'projects' && (
-                            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-900 rounded-full lg:block hidden"></span>
-                        )}
+                        Projects
                     </li>
                     <li
-                        className={`${getTabClass('skills')} w-full lg:w-auto py-4 lg:py-0 lg:pl-4 lg:pr-8 lg:hover:bg-gray-50 lg:rounded-md transition-colors`}
+                        className={`${getTabClass('skills')} w-full lg:w-auto py-4 lg:py-0 lg:pl-4 lg:pr-8 transition-colors`}
                         onClick={() => {
                             dispatch({ type: 'SET_SECTION', payload: 'skills' });
                             setIsOpen(false);
                         }}
                     >
-                        <span className="relative z-10">Skills</span>
-                        {state.currentSection === 'skills' && (
-                            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-900 rounded-full lg:block hidden"></span>
-                        )}
+                        Skills
                     </li>
                     <li
-                        className={`${getTabClass('contact')} w-full lg:w-auto py-4 lg:py-0 lg:pl-4 lg:pr-4 lg:hover:bg-gray-50 lg:rounded-md transition-colors`}
+                        className={`${getTabClass('contact')} w-full lg:w-auto py-4 lg:py-0 lg:pl-4 lg:pr-4 transition-colors`}
                         onClick={() => {
                             dispatch({ type: 'SET_SECTION', payload: 'contact' });
                             setIsOpen(false);
                         }}
                     >
-                        <span className="relative z-10">Contact</span>
-                        {state.currentSection === 'contact' && (
-                            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-900 rounded-full lg:block hidden"></span>
+                        Contact
+                    </li>
+                    
+                    {/* Authentication Section - Mobile Only */}
+                    <li className="lg:hidden w-full py-4 border-t border-gray-200 mt-4">
+                        {!isAuthenticated ? (
+                            <button 
+                                onClick={() => {
+                                    handleLoginSuccess();
+                                    setIsOpen(false);
+                                }}
+                                onMouseMove={handleMouseMove}
+                                className="liquid-glass-button w-full inline-flex items-center justify-center rounded-md px-4 py-2 text-base font-medium text-gray-700"
+                                aria-label="Login with Google"
+                            >
+                                <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12.2461 14V10H19.8701C20.0217 10.544 20.1217 11.022 20.1217 11.58C20.1217 16.128 16.9143 19 12.2461 19C8.12574 19 4.74611 15.6196 4.74611 11.5C4.74611 7.38037 8.12574 4 12.2461 4C14.1959 4 15.9272 4.76394 17.2077 6.02332L14.4445 8.67553C13.8908 8.14129 13.1263 7.73255 12.2461 7.73255C10.1578 7.73255 8.47869 9.42343 8.47869 11.5C8.47869 13.5766 10.1578 15.2675 12.2461 15.2675C13.8958 15.2675 15.0856 14.3951 15.499 13.17H12.2461V14Z" fill="currentColor"/>
+                                </svg>
+                                Sign in
+                            </button>
+                        ) : (
+                            <div className="flex flex-col gap-3 px-4">
+                                <span className="text-base text-gray-600 text-center">{userData?.email}</span>
+                                <button
+                                    onClick={() => {
+                                        handleLogout();
+                                        setIsOpen(false);
+                                    }}
+                                    onMouseMove={handleMouseMove}
+                                    className="liquid-glass-button w-full inline-flex items-center justify-center rounded-md px-4 py-2 text-base font-medium text-gray-700"
+                                    aria-label="Logout"
+                                >
+                                    Sign out
+                                </button>
+                            </div>
                         )}
                     </li>
                     
