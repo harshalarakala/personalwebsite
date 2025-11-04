@@ -3,6 +3,7 @@ import { FaReact, FaNodeJs, FaAws, FaPython, FaJava, FaDatabase } from 'react-ic
 import { SiTypescript, SiDotnet, SiDjango, SiElasticsearch, SiTailwindcss, SiDocker } from 'react-icons/si';
 import { DiScrum, DiGit } from 'react-icons/di';
 import '../css/SkillsAnimation.css';
+import '../css/LiquidGlass.css';
 
 const skillsData = [
   {
@@ -138,12 +139,30 @@ const SkillCarousel: React.FC<{ items: Array<{ name: string, icon: JSX.Element, 
     }
   };
 
+  // Mouse tracking for liquid glass effect
+  const handleGlassMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    const element = e.currentTarget;
+    const rect = element.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    element.style.setProperty('--mouse-x', `${x}%`);
+    element.style.setProperty('--mouse-y', `${y}%`);
+  };
+
   return (
     <div
       className="carousel-wrapper relative flex items-center justify-center overflow-hidden"
       style={{ width: '100%', maxWidth: '1200px', margin: '0 auto' }}
     >
-      <button className="prev absolute left-0 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm" onClick={prevSlide}>
+      <button 
+        onMouseMove={handleGlassMouseMove}
+        className="liquid-glass-button prev absolute left-0 inline-flex items-center justify-center px-3 py-2 text-sm font-medium text-gray-700 transition-colors shadow-sm"
+        style={{ 
+          background: 'rgba(255, 255, 255, 0.8)', 
+          borderColor: 'rgba(255, 255, 255, 0.6)' 
+        } as React.CSSProperties}
+        onClick={prevSlide}
+      >
         ‹
       </button>
       <div
@@ -169,7 +188,15 @@ const SkillCarousel: React.FC<{ items: Array<{ name: string, icon: JSX.Element, 
               width: '200px',
             }}
           >
-            <div className="card p-4 border border-gray-200 rounded-xl bg-white flex flex-col items-center hover:bg-gray-50 shadow-sm hover:shadow-md transition-all duration-300 ease-out">
+            <div 
+              onMouseMove={handleGlassMouseMove}
+              className="liquid-glass-card card p-4 flex flex-col items-center shadow-sm transition-all duration-300 ease-out"
+              style={{ 
+                background: 'rgba(255, 255, 255, 0.8)', 
+                borderColor: 'rgba(255, 255, 255, 0.6)',
+                border: '1px solid rgba(255, 255, 255, 0.6)'
+              } as React.CSSProperties}
+            >
               <div className="text-4xl text-gray-700 mb-4">{item.icon}</div>
               <h4 className="text-lg font-semibold text-gray-900">{item.name}</h4>
               <p className="text-sm text-gray-600 mt-1">Experience: {item.time}</p>
@@ -177,7 +204,15 @@ const SkillCarousel: React.FC<{ items: Array<{ name: string, icon: JSX.Element, 
           </div>
         ))}
       </div>
-      <button className="next absolute right-0 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm" onClick={nextSlide}>
+      <button 
+        onMouseMove={handleGlassMouseMove}
+        className="liquid-glass-button next absolute right-0 inline-flex items-center justify-center px-3 py-2 text-sm font-medium text-gray-700 transition-colors shadow-sm"
+        style={{ 
+          background: 'rgba(255, 255, 255, 0.8)', 
+          borderColor: 'rgba(255, 255, 255, 0.6)' 
+        } as React.CSSProperties}
+        onClick={nextSlide}
+      >
         ›
       </button>
     </div>

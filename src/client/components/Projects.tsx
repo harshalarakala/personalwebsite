@@ -5,6 +5,7 @@ import { onAuthChange, isAuthorizedEditor } from '../services/authService';
 import { Experience as ExperienceType, getItems, createItem, updateItem, deleteItem } from '../services/experienceService';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import '../css/LiquidGlass.css';
 
 type ProjectItem = ExperienceType & {
   link?: string | null;
@@ -304,6 +305,16 @@ const Projects: React.FC = () => {
     );
   }, [projects, sortOrder]);
 
+  // Mouse tracking for liquid glass effect
+  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    const element = e.currentTarget;
+    const rect = element.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    element.style.setProperty('--mouse-x', `${x}%`);
+    element.style.setProperty('--mouse-y', `${y}%`);
+  };
+
   if (loading) {
     return (
       <div className="w-full h-screen flex items-center justify-center bg-white">
@@ -327,14 +338,24 @@ const Projects: React.FC = () => {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc')}
-              className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+              onMouseMove={handleMouseMove}
+              className="liquid-glass-button inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700"
+              style={{ 
+                background: 'rgba(255, 255, 255, 0.8)', 
+                borderColor: 'rgba(255, 255, 255, 0.6)' 
+              } as React.CSSProperties}
             >
               {sortOrder === 'desc' ? 'Sort: Newest' : 'Sort: Oldest'}
             </button>
             {isAuthenticated && (
               <button
                 onClick={handleCreateNew}
-                className="inline-flex items-center justify-center rounded-md bg-green-600 hover:bg-green-700 px-4 py-2 text-sm font-medium text-white transition-colors shadow-sm"
+                onMouseMove={handleMouseMove}
+                className="liquid-glass-button liquid-glass-green inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white"
+                style={{ 
+                  background: 'rgba(22, 163, 74, 0.8)', 
+                  borderColor: 'rgba(22, 163, 74, 0.6)' 
+                } as React.CSSProperties}
               >
                 + New Project
               </button>
@@ -346,7 +367,13 @@ const Projects: React.FC = () => {
           {sorted.map((p) => (
             <div
               key={p.id || p.title}
-              className="group relative rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition-colors duration-200 shadow-sm hover:shadow-md cursor-pointer"
+              onMouseMove={handleMouseMove}
+              className="liquid-glass-card group relative rounded-xl cursor-pointer"
+              style={{ 
+                background: 'rgba(255, 255, 255, 0.8)', 
+                borderColor: 'rgba(255, 255, 255, 0.6)',
+                border: '1px solid rgba(255, 255, 255, 0.6)'
+              } as React.CSSProperties}
               onClick={() => setActive(p)}
               role="button"
               tabIndex={0}
@@ -392,7 +419,12 @@ const Projects: React.FC = () => {
                 <div className="mt-4 flex items-center gap-2.5 flex-wrap">
                   <button
                     onClick={() => setActive(p)}
-                    className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-3.5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+                    onMouseMove={handleMouseMove}
+                    className="liquid-glass-button inline-flex items-center justify-center px-3.5 py-2 text-sm font-medium text-gray-700"
+                    style={{ 
+                      background: 'rgba(255, 255, 255, 0.8)', 
+                      borderColor: 'rgba(255, 255, 255, 0.6)' 
+                    } as React.CSSProperties}
                   >
                     Details
                   </button>
@@ -402,7 +434,12 @@ const Projects: React.FC = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={(e) => e.stopPropagation()}
-                      className="inline-flex items-center justify-center rounded-md bg-[#7c4dff] hover:bg-[#6a3dff] px-3.5 py-2 text-sm font-medium text-white transition-colors shadow-sm"
+                      onMouseMove={handleMouseMove}
+                      className="liquid-glass-button inline-flex items-center justify-center px-3.5 py-2 text-sm font-medium text-white"
+                      style={{ 
+                        background: 'rgba(124, 77, 255, 0.8)', 
+                        borderColor: 'rgba(124, 77, 255, 0.6)' 
+                      } as React.CSSProperties}
                     >
                       Visit Project
                     </a>
@@ -413,7 +450,12 @@ const Projects: React.FC = () => {
                         e.stopPropagation();
                         handleEditClick(p);
                       }}
-                      className="inline-flex items-center justify-center rounded-md border border-blue-300 bg-blue-50 px-3.5 py-2 text-sm font-medium text-blue-700 hover:bg-blue-100 transition-colors shadow-sm"
+                      onMouseMove={handleMouseMove}
+                      className="liquid-glass-button liquid-glass-blue inline-flex items-center justify-center px-3.5 py-2 text-sm font-medium text-blue-700"
+                      style={{ 
+                        background: 'rgba(59, 130, 246, 0.15)', 
+                        borderColor: 'rgba(59, 130, 246, 0.3)' 
+                      } as React.CSSProperties}
                     >
                       Edit
                     </button>
@@ -441,7 +483,12 @@ const Projects: React.FC = () => {
                   <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">Create New Project</h2>
                   <button 
                     onClick={() => setIsCreating(false)}
-                    className="flex-shrink-0 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+                    onMouseMove={handleMouseMove}
+                    className="liquid-glass-button flex-shrink-0 px-3 py-1.5 text-sm font-medium text-gray-700"
+                    style={{ 
+                      background: 'rgba(255, 255, 255, 0.8)', 
+                      borderColor: 'rgba(255, 255, 255, 0.6)' 
+                    } as React.CSSProperties}
                   >
                     Close
                   </button>
@@ -549,13 +596,23 @@ const Projects: React.FC = () => {
               <div className="p-5 sm:p-6 pt-4 border-t border-gray-200 flex items-center gap-3 flex-shrink-0">
                 <button
                   onClick={handleSaveNew}
-                  className="inline-flex items-center justify-center rounded-md bg-green-600 hover:bg-green-700 px-4 py-2 text-sm font-medium text-white transition-colors shadow-sm"
+                  onMouseMove={handleMouseMove}
+                  className="liquid-glass-button liquid-glass-green inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white"
+                  style={{ 
+                    background: 'rgba(22, 163, 74, 0.8)', 
+                    borderColor: 'rgba(22, 163, 74, 0.6)' 
+                  } as React.CSSProperties}
                 >
                   Create Project
                 </button>
                 <button
                   onClick={() => setIsCreating(false)}
-                  className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+                  onMouseMove={handleMouseMove}
+                  className="liquid-glass-button inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700"
+                  style={{ 
+                    background: 'rgba(255, 255, 255, 0.8)', 
+                    borderColor: 'rgba(255, 255, 255, 0.6)' 
+                  } as React.CSSProperties}
                 >
                   Cancel
                 </button>
@@ -612,7 +669,12 @@ const Projects: React.FC = () => {
                         setActive(null);
                       }
                     }}
-                    className="flex-shrink-0 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+                    onMouseMove={handleMouseMove}
+                    className="liquid-glass-button flex-shrink-0 px-3 py-1.5 text-sm font-medium text-gray-700"
+                    style={{ 
+                      background: 'rgba(255, 255, 255, 0.8)', 
+                      borderColor: 'rgba(255, 255, 255, 0.6)' 
+                    } as React.CSSProperties}
                   >
                     {isEditing ? 'Cancel' : 'Close'}
                   </button>
@@ -734,21 +796,36 @@ const Projects: React.FC = () => {
                   <>
                     <button
                       onClick={handleSaveEdit}
-                      className="inline-flex items-center justify-center rounded-md bg-green-600 hover:bg-green-700 px-4 py-2 text-sm font-medium text-white transition-colors shadow-sm"
+                      onMouseMove={handleMouseMove}
+                      className="liquid-glass-button liquid-glass-green inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white"
+                      style={{ 
+                        background: 'rgba(22, 163, 74, 0.8)', 
+                        borderColor: 'rgba(22, 163, 74, 0.6)' 
+                      } as React.CSSProperties}
                     >
                       Save Changes
                     </button>
                     {active.id && (
                       <button
                         onClick={handleDeleteItem}
-                        className="inline-flex items-center justify-center rounded-md bg-red-600 hover:bg-red-700 px-4 py-2 text-sm font-medium text-white transition-colors shadow-sm"
+                        onMouseMove={handleMouseMove}
+                        className="liquid-glass-button liquid-glass-red inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white"
+                        style={{ 
+                          background: 'rgba(220, 38, 38, 0.8)', 
+                          borderColor: 'rgba(220, 38, 38, 0.6)' 
+                        } as React.CSSProperties}
                       >
                         Delete
                       </button>
                     )}
                     <button
                       onClick={() => setIsEditing(false)}
-                      className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+                      onMouseMove={handleMouseMove}
+                      className="liquid-glass-button inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700"
+                      style={{ 
+                        background: 'rgba(255, 255, 255, 0.8)', 
+                        borderColor: 'rgba(255, 255, 255, 0.6)' 
+                      } as React.CSSProperties}
                     >
                       Cancel
                     </button>
@@ -758,7 +835,12 @@ const Projects: React.FC = () => {
                     {isAuthenticated && active && (
                       <button
                         onClick={() => handleEditClick(active)}
-                        className="inline-flex items-center justify-center rounded-md border border-blue-300 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 hover:bg-blue-100 transition-colors shadow-sm"
+                        onMouseMove={handleMouseMove}
+                        className="liquid-glass-button liquid-glass-blue inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-blue-700"
+                        style={{ 
+                          background: 'rgba(59, 130, 246, 0.15)', 
+                          borderColor: 'rgba(59, 130, 246, 0.3)' 
+                        } as React.CSSProperties}
                       >
                         Edit
                       </button>
@@ -768,14 +850,24 @@ const Projects: React.FC = () => {
                         href={ensureAbsoluteUrl(active.link) || '#'}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center rounded-md bg-[#7c4dff] hover:bg-[#6a3dff] px-4 py-2 text-sm font-medium text-white transition-colors shadow-sm"
+                        onMouseMove={handleMouseMove}
+                        className="liquid-glass-button inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white"
+                        style={{ 
+                          background: 'rgba(124, 77, 255, 0.8)', 
+                          borderColor: 'rgba(124, 77, 255, 0.6)' 
+                        } as React.CSSProperties}
                       >
                         Visit Project
                       </a>
                     )}
                     <button
                       onClick={() => setActive(null)}
-                      className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+                      onMouseMove={handleMouseMove}
+                      className="liquid-glass-button inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700"
+                      style={{ 
+                        background: 'rgba(255, 255, 255, 0.8)', 
+                        borderColor: 'rgba(255, 255, 255, 0.6)' 
+                      } as React.CSSProperties}
                     >
                       Done
                     </button>

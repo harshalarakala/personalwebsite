@@ -7,6 +7,7 @@ import { Experience as ExperienceType, getItems, createItem, updateItem, toggleA
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './styles.css';
+import '../css/LiquidGlass.css';
 
 interface ExperienceOrProject {
   id?: string;
@@ -400,6 +401,16 @@ const ExperienceComponent: React.FC<ExperienceComponentProps> = ({ mode }) => {
     }
   };
 
+  // Mouse tracking for liquid glass effect
+  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    const element = e.currentTarget;
+    const rect = element.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    element.style.setProperty('--mouse-x', `${x}%`);
+    element.style.setProperty('--mouse-y', `${y}%`);
+  };
+
   const handleToggleArchived = async () => {
     setShowArchived(!showArchived);
   };
@@ -575,7 +586,12 @@ const ExperienceComponent: React.FC<ExperienceComponentProps> = ({ mode }) => {
         <div className="sm:hidden mb-3">
           <button 
             onClick={() => setShowFullDescription(!showFullDescription)}
-            className="px-3 py-1 bg-red-500 text-white rounded text-xs flex items-center justify-center w-full"
+            onMouseMove={handleMouseMove}
+            className="liquid-glass-button liquid-glass-red px-3 py-1 text-white rounded text-xs flex items-center justify-center w-full"
+            style={{ 
+              background: 'rgba(220, 38, 38, 0.8)', 
+              borderColor: 'rgba(220, 38, 38, 0.6)' 
+            } as React.CSSProperties}
           >
             {showFullDescription ? "Hide Details" : "Show Details"}
           </button>
@@ -699,13 +715,23 @@ const ExperienceComponent: React.FC<ExperienceComponentProps> = ({ mode }) => {
       <div className="mt-3 sm:mt-4 flex space-x-2">
         <button
           onClick={handleSaveEdit}
-          className="px-2 sm:px-3 py-1 bg-green-500 text-white rounded text-xs sm:text-sm"
+          onMouseMove={handleMouseMove}
+          className="liquid-glass-button liquid-glass-green px-2 sm:px-3 py-1 text-white rounded text-xs sm:text-sm"
+          style={{ 
+            background: 'rgba(22, 163, 74, 0.8)', 
+            borderColor: 'rgba(22, 163, 74, 0.6)' 
+          } as React.CSSProperties}
         >
           Save
         </button>
         <button
           onClick={() => setIsEditing(false)}
-          className="px-2 sm:px-3 py-1 bg-red-500 text-white rounded text-xs sm:text-sm"
+          onMouseMove={handleMouseMove}
+          className="liquid-glass-button liquid-glass-red px-2 sm:px-3 py-1 text-white rounded text-xs sm:text-sm"
+          style={{ 
+            background: 'rgba(220, 38, 38, 0.8)', 
+            borderColor: 'rgba(220, 38, 38, 0.6)' 
+          } as React.CSSProperties}
         >
           Cancel
         </button>
@@ -746,11 +772,17 @@ const ExperienceComponent: React.FC<ExperienceComponentProps> = ({ mode }) => {
           <div className="absolute top-2 sm:top-3 lg:top-4 right-2 sm:right-3 lg:right-4 z-50">
             <button
               onClick={handleToggleArchived}
-              className={`inline-flex items-center justify-center rounded-md border px-4 py-2 text-sm font-medium transition-colors shadow-sm ${
+              onMouseMove={handleMouseMove}
+              className={`liquid-glass-button inline-flex items-center justify-center px-4 py-2 text-sm font-medium transition-colors ${
                 showArchived 
-                  ? 'border-purple-300 bg-purple-50 text-purple-700 hover:bg-purple-100' 
-                  : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+                  ? 'liquid-glass-purple' 
+                  : ''
               }`}
+              style={showArchived ? {
+                background: 'rgba(196, 181, 253, 0.8)',
+                borderColor: 'rgba(196, 181, 253, 0.6)',
+                color: '#6b21a8'
+              } as React.CSSProperties : undefined}
               aria-label={showArchived ? "Hide archived" : "Show archived"}
             >
               {showArchived ? "Hide Archived" : "Show Archived"}
@@ -759,19 +791,36 @@ const ExperienceComponent: React.FC<ExperienceComponentProps> = ({ mode }) => {
         )}
 
         {/* Floating Navigation Bar - Adjusted for better mobile positioning */}
-        <div className="fixed bottom-2 sm:bottom-3 lg:bottom-[2.5rem] left-2 sm:left-3 lg:left-[4rem] bg-white border border-gray-200 shadow-lg p-2 sm:p-3 lg:p-4 rounded-lg flex justify-between gap-2 w-36 sm:w-40 lg:w-48 z-50">
+        <div className="fixed bottom-2 sm:bottom-3 lg:bottom-[2.5rem] left-2 sm:left-3 lg:left-[4rem] p-2 sm:p-3 lg:p-4 rounded-lg flex justify-between gap-2 w-36 sm:w-40 lg:w-48 z-50"
+        style={{ 
+          background: 'rgba(255, 255, 255, 0.9)', 
+          border: '1px solid rgba(255, 255, 255, 0.6)',
+          backdropFilter: 'blur(20px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.8)'
+        } as React.CSSProperties}>
           <button
             onClick={handlePrevious}
+            onMouseMove={handleMouseMove}
             disabled={currentIndex === 0}
-            className="flex-1 px-3 py-2 bg-gray-900 text-white rounded-md text-xs sm:text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-900"
+            className="liquid-glass-button liquid-glass-dark flex-1 px-3 py-2 text-xs sm:text-sm font-medium text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{ 
+              background: 'rgba(17, 24, 39, 0.8)', 
+              borderColor: 'rgba(17, 24, 39, 0.6)' 
+            } as React.CSSProperties}
             aria-label="Previous item"
           >
             Previous
           </button>
           <button
             onClick={handleNext}
+            onMouseMove={handleMouseMove}
             disabled={currentIndex === sortedData.length - 1}
-            className="flex-1 px-3 py-2 bg-gray-900 text-white rounded-md text-xs sm:text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-900"
+            className="liquid-glass-button liquid-glass-dark flex-1 px-3 py-2 text-xs sm:text-sm font-medium text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{ 
+              background: 'rgba(17, 24, 39, 0.8)', 
+              borderColor: 'rgba(17, 24, 39, 0.6)' 
+            } as React.CSSProperties}
             aria-label="Next item"
           >
             Next
@@ -812,30 +861,53 @@ const ExperienceComponent: React.FC<ExperienceComponentProps> = ({ mode }) => {
                   <div className="flex flex-wrap gap-2 mt-2 sm:mt-0">
                     <button
                       onClick={handleEditClick}
-                      className="inline-flex items-center justify-center rounded-md border border-blue-300 bg-blue-50 px-3 py-2 text-sm font-medium text-blue-700 hover:bg-blue-100 transition-colors shadow-sm"
+                      onMouseMove={handleMouseMove}
+                      className="liquid-glass-button liquid-glass-blue inline-flex items-center justify-center px-3 py-2 text-sm font-medium text-blue-700"
+                      style={{ 
+                        background: 'rgba(59, 130, 246, 0.15)', 
+                        borderColor: 'rgba(59, 130, 246, 0.3)' 
+                      } as React.CSSProperties}
                       aria-label="Edit content"
                     >
                       Edit
                     </button>
                     <button
                       onClick={handleCreateNew}
-                      className="inline-flex items-center justify-center rounded-md bg-green-600 hover:bg-green-700 px-3 py-2 text-sm font-medium text-white transition-colors shadow-sm"
+                      onMouseMove={handleMouseMove}
+                      className="liquid-glass-button liquid-glass-green inline-flex items-center justify-center px-3 py-2 text-sm font-medium text-white"
+                      style={{ 
+                        background: 'rgba(22, 163, 74, 0.8)', 
+                        borderColor: 'rgba(22, 163, 74, 0.6)' 
+                      } as React.CSSProperties}
                       aria-label="Add new item"
                     >
                       Add New
                     </button>
                     <button
                       onClick={handleArchiveItem}
-                      className={`inline-flex items-center justify-center rounded-md px-3 py-2 text-sm font-medium text-white transition-colors shadow-sm ${
-                        sortedData[currentIndex].archived ? 'bg-green-600 hover:bg-green-700' : 'bg-yellow-500 hover:bg-yellow-600'
+                      onMouseMove={handleMouseMove}
+                      className={`liquid-glass-button inline-flex items-center justify-center px-3 py-2 text-sm font-medium text-white ${
+                        sortedData[currentIndex].archived ? 'liquid-glass-green' : 'liquid-glass-yellow'
                       }`}
+                      style={sortedData[currentIndex].archived ? {
+                        background: 'rgba(22, 163, 74, 0.8)',
+                        borderColor: 'rgba(22, 163, 74, 0.6)'
+                      } : {
+                        background: 'rgba(234, 179, 8, 0.8)',
+                        borderColor: 'rgba(234, 179, 8, 0.6)'
+                      } as React.CSSProperties}
                       aria-label={sortedData[currentIndex].archived ? "Unarchive" : "Archive"}
                     >
                       {sortedData[currentIndex].archived ? "Unarchive" : "Archive"}
                     </button>
                     <button
                       onClick={handleDeleteItem}
-                      className="inline-flex items-center justify-center rounded-md bg-red-600 hover:bg-red-700 px-3 py-2 text-sm font-medium text-white transition-colors shadow-sm"
+                      onMouseMove={handleMouseMove}
+                      className="liquid-glass-button liquid-glass-red inline-flex items-center justify-center px-3 py-2 text-sm font-medium text-white"
+                      style={{ 
+                        background: 'rgba(220, 38, 38, 0.8)', 
+                        borderColor: 'rgba(220, 38, 38, 0.6)' 
+                      } as React.CSSProperties}
                       aria-label="Delete"
                     >
                       Delete
@@ -861,7 +933,12 @@ const ExperienceComponent: React.FC<ExperienceComponentProps> = ({ mode }) => {
               {isAuthenticated && (
                 <button
                   onClick={handleCreateNew}
-                  className="mt-3 sm:mt-4 inline-flex items-center justify-center rounded-md bg-green-600 hover:bg-green-700 px-4 py-2 text-sm font-medium text-white transition-colors shadow-sm"
+                  onMouseMove={handleMouseMove}
+                  className="liquid-glass-button liquid-glass-green mt-3 sm:mt-4 inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white"
+                  style={{ 
+                    background: 'rgba(22, 163, 74, 0.8)', 
+                    borderColor: 'rgba(22, 163, 74, 0.6)' 
+                  } as React.CSSProperties}
                 >
                   Add Your First Experience
                 </button>
@@ -896,7 +973,8 @@ const ExperienceComponent: React.FC<ExperienceComponentProps> = ({ mode }) => {
               <select
                 value={filterCompany}
                 onChange={(e) => setFilterCompany(e.target.value)}
-                className="flex-1 min-w-[120px] px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                onMouseMove={handleMouseMove}
+                className="liquid-glass-select flex-1 min-w-[120px] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="">All Companies</option>
                 {uniqueCompanies.map(company => (
@@ -910,7 +988,8 @@ const ExperienceComponent: React.FC<ExperienceComponentProps> = ({ mode }) => {
               <select
                 value={filterLocation}
                 onChange={(e) => setFilterLocation(e.target.value)}
-                className="flex-1 min-w-[120px] px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                onMouseMove={handleMouseMove}
+                className="liquid-glass-select flex-1 min-w-[120px] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="">All Locations</option>
                 {uniqueLocations.map(location => (
@@ -921,7 +1000,8 @@ const ExperienceComponent: React.FC<ExperienceComponentProps> = ({ mode }) => {
 
             {/* Sort Button */}
             <button
-              className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm whitespace-nowrap"
+              onMouseMove={handleMouseMove}
+              className="liquid-glass-button inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 whitespace-nowrap"
               onClick={() => {
                 setSortByDate(sortByDate === 'asc' ? 'desc' : 'asc');
               }}
@@ -939,7 +1019,12 @@ const ExperienceComponent: React.FC<ExperienceComponentProps> = ({ mode }) => {
                 setFilterCompany('');
                 setFilterLocation('');
               }}
-              className="w-full text-sm text-gray-600 hover:text-gray-900 underline"
+              onMouseMove={handleMouseMove}
+              className="liquid-glass-button w-full text-sm text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md"
+              style={{ 
+                background: 'rgba(255, 255, 255, 0.6)', 
+                borderColor: 'rgba(255, 255, 255, 0.4)' 
+              } as React.CSSProperties}
             >
               Clear all filters
             </button>
@@ -956,7 +1041,12 @@ const ExperienceComponent: React.FC<ExperienceComponentProps> = ({ mode }) => {
                     setFilterCompany('');
                     setFilterLocation('');
                   }}
-                  className="mt-2 text-sm text-blue-600 hover:text-blue-800 underline"
+                  onMouseMove={handleMouseMove}
+                  className="liquid-glass-button liquid-glass-blue mt-2 text-sm text-blue-700 px-3 py-2 rounded-md"
+                  style={{ 
+                    background: 'rgba(59, 130, 246, 0.15)', 
+                    borderColor: 'rgba(59, 130, 246, 0.3)' 
+                  } as React.CSSProperties}
                 >
                   Clear filters to see all experiences
                 </button>
@@ -967,11 +1057,19 @@ const ExperienceComponent: React.FC<ExperienceComponentProps> = ({ mode }) => {
             <div
               key={index}
               ref={(el) => (itemRefs.current[index] = el)}
-              className={`group relative rounded-xl border overflow-hidden mb-3 sm:mb-4 transition-all duration-200 cursor-pointer ${
+              onMouseMove={handleMouseMove}
+              className={`liquid-glass-card group relative rounded-xl overflow-hidden mb-3 sm:mb-4 transition-all duration-200 cursor-pointer ${
                 index === currentIndex 
-                  ? 'border-blue-500 bg-blue-50 shadow-lg ring-2 ring-blue-200' 
-                  : 'border-gray-200 bg-white hover:bg-gray-50 shadow-sm hover:shadow-md'
+                  ? 'ring-2 ring-blue-200' 
+                  : ''
               } ${item.archived ? 'opacity-60' : ''}`}
+              style={index === currentIndex ? {
+                background: 'rgba(59, 130, 246, 0.15)',
+                borderColor: 'rgba(59, 130, 246, 0.5)'
+              } : {
+                background: 'rgba(255, 255, 255, 0.8)',
+                borderColor: 'rgba(255, 255, 255, 0.6)'
+              } as React.CSSProperties}
               onClick={() => handleCardClick(index)}
             >
               {index !== currentIndex && (
@@ -1022,8 +1120,13 @@ const ExperienceComponent: React.FC<ExperienceComponentProps> = ({ mode }) => {
       <div className={`lg:hidden fixed inset-0 bg-black/50 z-50 ${currentIndex >= 0 && sortedData && sortedData.length > currentIndex ? 'flex' : 'hidden'} items-center justify-center p-3`}>
         <div className="bg-white p-4 rounded-lg w-full max-w-xl max-h-[90vh] overflow-y-auto relative">
           <button 
-            onClick={() => handleCardClick(-1)} 
-            className="absolute top-2 right-2 w-8 h-8 flex items-center justify-center bg-red-500 text-white rounded-full text-xl font-bold"
+            onClick={() => handleCardClick(-1)}
+            onMouseMove={handleMouseMove}
+            className="liquid-glass-button liquid-glass-red absolute top-2 right-2 w-8 h-8 flex items-center justify-center text-white rounded-full text-xl font-bold"
+            style={{ 
+              background: 'rgba(220, 38, 38, 0.8)', 
+              borderColor: 'rgba(220, 38, 38, 0.6)' 
+            } as React.CSSProperties}
             aria-label="Close details"
           >
             ×
@@ -1183,13 +1286,23 @@ const ExperienceComponent: React.FC<ExperienceComponentProps> = ({ mode }) => {
             <div className="mt-4 sm:mt-6 flex justify-end space-x-2 sm:space-x-3">
               <button
                 onClick={() => setIsCreating(false)}
-                className="px-3 sm:px-4 py-1 sm:py-2 bg-gray-200 text-gray-800 rounded text-xs sm:text-sm"
+                onMouseMove={handleMouseMove}
+                className="liquid-glass-button px-3 sm:px-4 py-1 sm:py-2 text-gray-800 rounded text-xs sm:text-sm"
+                style={{ 
+                  background: 'rgba(229, 231, 235, 0.8)', 
+                  borderColor: 'rgba(229, 231, 235, 0.6)' 
+                } as React.CSSProperties}
               >
                 Cancel
               </button>
               <button
                 onClick={handleSaveNew}
-                className="px-3 sm:px-4 py-1 sm:py-2 bg-green-500 text-white rounded text-xs sm:text-sm"
+                onMouseMove={handleMouseMove}
+                className="liquid-glass-button liquid-glass-green px-3 sm:px-4 py-1 sm:py-2 text-white rounded text-xs sm:text-sm"
+                style={{ 
+                  background: 'rgba(22, 163, 74, 0.8)', 
+                  borderColor: 'rgba(22, 163, 74, 0.6)' 
+                } as React.CSSProperties}
               >
                 Save
               </button>

@@ -4,6 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import Modal from 'react-modal';
 import 'react-toastify/dist/ReactToastify.css';
 import '../css/FallingAnimation.css';
+import '../css/LiquidGlass.css';
 import phone from '../images/phone.png';
 import emailPng from '../images/email.png';
 import messages from '../images/messages.png';
@@ -98,6 +99,16 @@ const Contact: React.FC = () => {
     setModalIsOpen(false);
   };
 
+  // Mouse tracking for liquid glass effect
+  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    const element = e.currentTarget;
+    const rect = element.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    element.style.setProperty('--mouse-x', `${x}%`);
+    element.style.setProperty('--mouse-y', `${y}%`);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -175,7 +186,15 @@ const Contact: React.FC = () => {
       </div>
   
       {/* Contact Form */}
-      <div className="max-w-md mx-auto p-5 sm:p-6 border border-gray-200 shadow-sm rounded-xl bg-white z-40">
+      <div 
+        onMouseMove={handleMouseMove}
+        className="liquid-glass-card max-w-md mx-auto p-5 sm:p-6 z-40"
+        style={{ 
+          background: 'rgba(255, 255, 255, 0.8)', 
+          borderColor: 'rgba(255, 255, 255, 0.6)',
+          border: '1px solid rgba(255, 255, 255, 0.6)'
+        } as React.CSSProperties}
+      >
         <p className="mb-6 text-gray-700 text-sm">
           I'd love to hear from you! Whether you have a question, want to collaborate on a project, or just want to say what's up, feel free to reach out.
         </p>
@@ -214,11 +233,21 @@ const Contact: React.FC = () => {
           </div>
           <button
             type="submit"
-            className={`w-full inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors shadow-sm ${
+            onMouseMove={handleMouseMove}
+            className={`liquid-glass-button w-full inline-flex items-center justify-center px-4 py-2 text-sm font-medium shadow-sm ${
               isSubmitting 
-                ? 'bg-gray-400 text-white cursor-not-allowed' 
-                : 'bg-green-600 hover:bg-green-700 text-white'
+                ? 'opacity-50 cursor-not-allowed' 
+                : ''
             }`}
+            style={!isSubmitting ? {
+              background: 'rgba(22, 163, 74, 0.8)', 
+              borderColor: 'rgba(22, 163, 74, 0.6)',
+              color: 'white'
+            } : {
+              background: 'rgba(156, 163, 175, 0.8)', 
+              borderColor: 'rgba(156, 163, 175, 0.6)',
+              color: 'white'
+            } as React.CSSProperties}
             disabled={isSubmitting}
           >
             {isSubmitting ? 'Sending...' : 'Submit'}
@@ -226,7 +255,12 @@ const Contact: React.FC = () => {
         </form>
         <button
             onClick={handleSendText}
-          className="w-full mt-3 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+            onMouseMove={handleMouseMove}
+            className="liquid-glass-button w-full mt-3 inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 shadow-sm"
+            style={{ 
+              background: 'rgba(255, 255, 255, 0.8)', 
+              borderColor: 'rgba(255, 255, 255, 0.6)' 
+            } as React.CSSProperties}
         >
           Send Text
         </button>
@@ -236,7 +270,13 @@ const Contact: React.FC = () => {
             href="https://github.com/harshalarakala"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-1 p-4 border border-gray-200 rounded-xl bg-white flex justify-center items-center hover:bg-gray-50 shadow-sm hover:shadow-md transition-colors duration-200 group"
+            onMouseMove={handleMouseMove}
+            className="liquid-glass-card flex-1 p-4 flex justify-center items-center shadow-sm transition-colors duration-200 group"
+            style={{ 
+              background: 'rgba(255, 255, 255, 0.8)', 
+              borderColor: 'rgba(255, 255, 255, 0.6)',
+              border: '1px solid rgba(255, 255, 255, 0.6)'
+            } as React.CSSProperties}
           >
             <img src={github} alt="GitHub" className="h-8 w-8 group-hover:scale-110 transition-transform duration-300" />
           </a>
@@ -246,7 +286,13 @@ const Contact: React.FC = () => {
             href="https://linkedin.com/in/harshalarakala"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-1 p-4 border border-gray-200 rounded-xl bg-white flex justify-center items-center hover:bg-gray-50 shadow-sm hover:shadow-md transition-colors duration-200 group"
+            onMouseMove={handleMouseMove}
+            className="liquid-glass-card flex-1 p-4 flex justify-center items-center shadow-sm transition-colors duration-200 group"
+            style={{ 
+              background: 'rgba(255, 255, 255, 0.8)', 
+              borderColor: 'rgba(255, 255, 255, 0.6)',
+              border: '1px solid rgba(255, 255, 255, 0.6)'
+            } as React.CSSProperties}
           >
             <img src={linkedIn} alt="LinkedIn" className="h-8 w-8 group-hover:scale-110 transition-transform duration-300" />
           </a>
@@ -268,13 +314,23 @@ const Contact: React.FC = () => {
         <div className="flex gap-3">
           <button
             onClick={handleCopyToClipboard}
-            className="flex-1 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+            onMouseMove={handleMouseMove}
+            className="liquid-glass-button flex-1 inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700"
+            style={{ 
+              background: 'rgba(255, 255, 255, 0.8)', 
+              borderColor: 'rgba(255, 255, 255, 0.6)' 
+            } as React.CSSProperties}
           >
             Copy to Clipboard
           </button>
           <button
             onClick={handleOpenMessages}
-            className="flex-1 inline-flex items-center justify-center rounded-md bg-green-600 hover:bg-green-700 px-4 py-2 text-sm font-medium text-white transition-colors shadow-sm"
+            onMouseMove={handleMouseMove}
+            className="liquid-glass-button liquid-glass-green flex-1 inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white"
+            style={{ 
+              background: 'rgba(22, 163, 74, 0.8)', 
+              borderColor: 'rgba(22, 163, 74, 0.6)' 
+            } as React.CSSProperties}
           >
             Open iMessage
           </button>
