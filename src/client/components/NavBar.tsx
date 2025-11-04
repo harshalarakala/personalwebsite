@@ -14,11 +14,12 @@ const NavBar: React.FC = () => {
     const { state, dispatch } = context;
 
     const getTabClass = (section: string) => {
-        return `content-center text-center h-full cursor-pointer transition-colors duration-200 ${
-            state.currentSection === section
+        const isActive = state.currentSection === section;
+        return `relative content-center text-center h-full cursor-pointer transition-all duration-200 ${
+            isActive
                 ? 'text-sm font-semibold text-gray-900'
                 : 'text-sm font-medium text-gray-600'
-        }${state.currentSection !== section ? ' hover:text-gray-900' : ''}`;
+        }${!isActive ? ' hover:text-gray-900' : ''}`;
     };
 
     // Add resize listener to handle screen size changes
@@ -70,86 +71,93 @@ const NavBar: React.FC = () => {
         <div ref={scope} className="fixed top-0 left-0 right-0 z-50">
             {/* Toggle button for mobile */}
             <div className="lg:hidden fixed top-4 right-4 z-50">
-              <div
-                  className="cursor-pointer w-7 h-7 flex flex-col justify-between"
+              <button
+                  className="cursor-pointer w-9 h-9 flex flex-col justify-center items-center gap-1.5 rounded-md hover:bg-gray-100 transition-colors p-1.5"
                   onClick={() => setIsOpen(!isOpen)}
+                  aria-label="Toggle menu"
               >
                   {!isOpen ? (
                       <>
-                          <div className="w-full h-[3px] bg-black rounded-full"></div>
-                          <div className="w-full h-[3px] bg-black rounded-full"></div>
-                          <div className="w-full h-[3px] bg-black rounded-full"></div>
+                          <div className="w-5 h-0.5 bg-gray-900 rounded-full transition-all duration-300"></div>
+                          <div className="w-5 h-0.5 bg-gray-900 rounded-full transition-all duration-300"></div>
+                          <div className="w-5 h-0.5 bg-gray-900 rounded-full transition-all duration-300"></div>
                       </>
                   ) : (
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path
-                              d="M 3 3 L 21 21"
-                              stroke="black"
-                              strokeWidth="2.5"
-                              strokeLinecap="round"
-                          />
-                          <path
-                              d="M 21 3 L 3 21"
-                              stroke="black"
-                              strokeWidth="2.5"
-                              strokeLinecap="round"
-                          />
-                      </svg>
+                      <>
+                          <div className="w-5 h-0.5 bg-gray-900 rounded-full rotate-45 translate-y-1.5 transition-all duration-300"></div>
+                          <div className="w-5 h-0.5 bg-gray-900 rounded-full opacity-0 transition-all duration-300"></div>
+                          <div className="w-5 h-0.5 bg-gray-900 rounded-full -rotate-45 -translate-y-1.5 transition-all duration-300"></div>
+                      </>
                   )}
-              </div>
+              </button>
           </div>
 
             {/* Full-Screen Mobile Menu */}
             <nav
-                className={`fixed top-0 left-0 w-full z-40 lg:flex lg:justify-center lg:items-center lg:h-16 lg:bg-white lg:border-b lg:border-gray-200 ${
+                className={`fixed top-0 left-0 w-full z-40 lg:flex lg:justify-center lg:items-center lg:h-16 lg:bg-white/95 lg:backdrop-blur-sm lg:border-b lg:border-gray-200 lg:shadow-sm ${
                     isOpen ? 'flex bg-white h-screen w-screen overflow-y-auto' : 'hidden lg:flex'
                 }`}
             >
-                <ul className="flex flex-col lg:flex-row justify-center items-center lg:space-x-8 w-full">
+                <ul className="flex flex-col lg:flex-row justify-center items-center w-full">
                     <li
-                        className={`${getTabClass('overview')} w-full lg:w-auto py-4 lg:py-0`}
+                        className={`${getTabClass('overview')} w-full lg:w-auto py-4 lg:py-0 lg:pl-4 lg:pr-8 lg:hover:bg-gray-50 lg:rounded-md transition-colors`}
                         onClick={() => {
                             dispatch({ type: 'SET_SECTION', payload: 'overview' });
                             setIsOpen(false);
                         }}
                     >
-                        Overview
+                        <span className="relative z-10">Overview</span>
+                        {state.currentSection === 'overview' && (
+                            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-900 rounded-full lg:block hidden"></span>
+                        )}
                     </li>
                     <li
-                        className={`${getTabClass('experience')} w-full lg:w-auto py-4 lg:py-0`}
+                        className={`${getTabClass('experience')} w-full lg:w-auto py-4 lg:py-0 lg:pl-4 lg:pr-8 lg:hover:bg-gray-50 lg:rounded-md transition-colors`}
                         onClick={() => {
                             dispatch({ type: 'SET_SECTION', payload: 'experience' });
                             setIsOpen(false);
                         }}
                     >
-                        Experiences
+                        <span className="relative z-10">Experiences</span>
+                        {state.currentSection === 'experience' && (
+                            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-900 rounded-full lg:block hidden"></span>
+                        )}
                     </li>
                     <li
-                        className={`${getTabClass('projects')} w-full lg:w-auto py-4 lg:py-0`}
+                        className={`${getTabClass('projects')} w-full lg:w-auto py-4 lg:py-0 lg:pl-4 lg:pr-8 lg:hover:bg-gray-50 lg:rounded-md transition-colors`}
                         onClick={() => {
                             dispatch({ type: 'SET_SECTION', payload: 'projects' });
                             setIsOpen(false);
                         }}
                     >
-                        Projects
+                        <span className="relative z-10">Projects</span>
+                        {state.currentSection === 'projects' && (
+                            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-900 rounded-full lg:block hidden"></span>
+                        )}
                     </li>
                     <li
-                        className={`${getTabClass('skills')} w-full lg:w-auto py-4 lg:py-0`}
+                        className={`${getTabClass('skills')} w-full lg:w-auto py-4 lg:py-0 lg:pl-4 lg:pr-8 lg:hover:bg-gray-50 lg:rounded-md transition-colors`}
                         onClick={() => {
                             dispatch({ type: 'SET_SECTION', payload: 'skills' });
                             setIsOpen(false);
                         }}
                     >
-                        Skills
+                        <span className="relative z-10">Skills</span>
+                        {state.currentSection === 'skills' && (
+                            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-900 rounded-full lg:block hidden"></span>
+                        )}
                     </li>
                     <li
-                        className={`${getTabClass('contact')} w-full lg:w-auto py-4 lg:py-0`}
+                        className={`${getTabClass('contact')} w-full lg:w-auto py-4 lg:py-0 lg:pl-4 lg:pr-4 lg:hover:bg-gray-50 lg:rounded-md transition-colors`}
                         onClick={() => {
                             dispatch({ type: 'SET_SECTION', payload: 'contact' });
                             setIsOpen(false);
                         }}
                     >
-                        Contact
+                        <span className="relative z-10">Contact</span>
+                        {state.currentSection === 'contact' && (
+                            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-900 rounded-full lg:block hidden"></span>
+                        )}
                     </li>
                     
                 </ul>

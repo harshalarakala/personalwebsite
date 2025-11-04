@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { experiences as initialExperiences } from './data';
 import MDEditor from '@uiw/react-md-editor';
 import { User } from 'firebase/auth';
-import { signInWithGoogle, signOut } from '../services/authService';
+import { signInWithGoogle, signOut, onAuthChange, isAuthorizedEditor } from '../services/authService';
 import { Experience as ExperienceType, getItems, createItem, updateItem, toggleArchiveItem, deleteItem, seedInitialData } from '../services/experienceService';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -150,6 +150,20 @@ const ExperienceComponent: React.FC<ExperienceComponentProps> = ({ mode }) => {
   
   // Add state to track screen size
   const [isLargeScreen, setIsLargeScreen] = useState(false);
+
+  // Listen to authentication state changes for persistence
+  useEffect(() => {
+    const unsubscribe = onAuthChange((user) => {
+      if (user && isAuthorizedEditor(user)) {
+        setIsAuthenticated(true);
+        setUserData(user);
+      } else {
+        setIsAuthenticated(false);
+        setUserData(null);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
   // Check screen size on mount and window resize
   useEffect(() => {
