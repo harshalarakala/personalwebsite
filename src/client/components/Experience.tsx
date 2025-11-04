@@ -654,7 +654,7 @@ const ExperienceComponent: React.FC<ExperienceComponentProps> = ({ mode }) => {
           <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Start Date</label>
           <DatePicker
             selected={editStartDate}
-            onChange={(date) => setEditStartDate(date)}
+            onChange={(date: Date | null) => setEditStartDate(date)}
             dateFormat="MMM yyyy"
             showMonthYearPicker
             className="w-full p-1.5 sm:p-2 border rounded text-xs sm:text-sm"
@@ -667,7 +667,7 @@ const ExperienceComponent: React.FC<ExperienceComponentProps> = ({ mode }) => {
           <div className="flex items-center space-x-2">
             <DatePicker
               selected={isOngoing ? null : editEndDate as Date | null}
-              onChange={(date) => setEditEndDate(date)}
+              onChange={(date: Date | null) => setEditEndDate(date)}
               dateFormat="MMM yyyy"
               showMonthYearPicker
               className="w-full p-1.5 sm:p-2 border rounded text-xs sm:text-sm"
@@ -702,7 +702,7 @@ const ExperienceComponent: React.FC<ExperienceComponentProps> = ({ mode }) => {
         <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Full Description (Markdown)</label>
         <MDEditor
           value={editContent}
-          onChange={(val) => setEditContent(val || "")}
+          onChange={(val: string | undefined) => setEditContent(val || "")}
           height={400}
           preview="edit"
         />
@@ -1152,7 +1152,7 @@ const ExperienceComponent: React.FC<ExperienceComponentProps> = ({ mode }) => {
                   <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Start Date</label>
                   <DatePicker
                     selected={newStartDate}
-                    onChange={(date) => setNewStartDate(date)}
+                    onChange={(date: Date | null) => setNewStartDate(date)}
                     dateFormat="MMM yyyy"
                     showMonthYearPicker
                     className="w-full p-1.5 sm:p-2 border rounded text-xs sm:text-sm"
@@ -1165,7 +1165,7 @@ const ExperienceComponent: React.FC<ExperienceComponentProps> = ({ mode }) => {
                   <div className="flex items-center space-x-2">
                     <DatePicker
                       selected={newIsOngoing ? null : newEndDate}
-                      onChange={(date) => setNewEndDate(date)}
+                      onChange={(date: Date | null) => setNewEndDate(date)}
                       dateFormat="MMM yyyy"
                       showMonthYearPicker
                       className="w-full p-1.5 sm:p-2 border rounded text-xs sm:text-sm"
@@ -1200,7 +1200,7 @@ const ExperienceComponent: React.FC<ExperienceComponentProps> = ({ mode }) => {
                 <label className="block text-xs sm:text-sm font-medium text-gray-700">Full Description (Markdown)</label>
                 <MDEditor
                   value={newItem.fullDescription}
-                  onChange={(val) => setNewItem({...newItem, fullDescription: val || ""})}
+                  onChange={(val: string | undefined) => setNewItem({...newItem, fullDescription: val || ""})}
                   height={200}
                 />
               </div>

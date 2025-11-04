@@ -517,7 +517,7 @@ const Projects: React.FC = () => {
                       <label className="block text-sm font-medium text-gray-700 mb-1.5">Start Date</label>
                       <DatePicker
                         selected={newStartDate}
-                        onChange={(date) => setNewStartDate(date)}
+                        onChange={(date: Date | null) => setNewStartDate(date)}
                         dateFormat="MMM yyyy"
                         showMonthYearPicker
                         className="w-full p-2.5 border border-gray-300 rounded-md text-sm"
@@ -527,9 +527,9 @@ const Projects: React.FC = () => {
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1.5">End Date</label>
                       <div className="flex items-center gap-2">
-                        <DatePicker
-                          selected={newIsOngoing ? null : newEndDate}
-                          onChange={(date) => setNewEndDate(date)}
+                          <DatePicker
+                            selected={newIsOngoing ? null : newEndDate}
+                            onChange={(date: Date | null) => setNewEndDate(date)}
                           dateFormat="MMM yyyy"
                           showMonthYearPicker
                           className="flex-1 p-2.5 border border-gray-300 rounded-md text-sm"
@@ -581,7 +581,7 @@ const Projects: React.FC = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-1.5">Full Description (Markdown)</label>
                     <MDEditor
                       value={newContent}
-                      onChange={(val) => setNewContent(val || "")}
+                      onChange={(val: string | undefined) => setNewContent(val || "")}
                       height={400}
                       preview="edit"
                     />
@@ -688,7 +688,7 @@ const Projects: React.FC = () => {
                         <label className="block text-sm font-medium text-gray-700 mb-1.5">Start Date</label>
                         <DatePicker
                           selected={editStartDate}
-                          onChange={(date) => setEditStartDate(date)}
+                          onChange={(date: Date | null) => setEditStartDate(date)}
                           dateFormat="MMM yyyy"
                           showMonthYearPicker
                           className="w-full p-2.5 border border-gray-300 rounded-md text-sm"
@@ -698,9 +698,9 @@ const Projects: React.FC = () => {
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1.5">End Date</label>
                         <div className="flex items-center gap-2">
-                          <DatePicker
-                            selected={isOngoing ? null : editEndDate as Date | null}
-                            onChange={(date) => setEditEndDate(date)}
+                            <DatePicker
+                              selected={isOngoing ? null : editEndDate as Date | null}
+                              onChange={(date: Date | null) => setEditEndDate(date)}
                             dateFormat="MMM yyyy"
                             showMonthYearPicker
                             className="flex-1 p-2.5 border border-gray-300 rounded-md text-sm"
@@ -750,7 +750,7 @@ const Projects: React.FC = () => {
                       <label className="block text-sm font-medium text-gray-700 mb-1.5">Full Description (Markdown)</label>
                       <MDEditor
                         value={editContent}
-                        onChange={(val) => setEditContent(val || "")}
+                        onChange={(val: string | undefined) => setEditContent(val || "")}
                         height={400}
                         preview="edit"
                       />

@@ -78,7 +78,7 @@ const Overview: React.FC = () => {
                         </motion.p>
                     </AnimatePresence>
                     <p className="text-base sm:text-lg md:text-xl text-gray-700 mt-3 md:mt-4">
-                        I'm a passionate Software Engineer and student at the University of Virginia, specializing in creating seamless digital experiences. Let's build something amazing together.
+                        I'm a passionate Software Engineer and student at the University of Virginia, specializing in creating seamless digital experiences. Let's build something amazing.
                     </p>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mt-4 sm:mt-5 md:mt-6">

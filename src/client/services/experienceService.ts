@@ -47,7 +47,7 @@ export const getItems = async (type: 'experience' | 'project', includeArchived =
     }
     
     const snapshot = await getDocs(q);
-    return snapshot.docs.map(doc => ({ 
+    return snapshot.docs.map((doc: any) => ({ 
       id: doc.id, 
       ...doc.data() 
     } as Experience));

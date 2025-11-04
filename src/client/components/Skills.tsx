@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FaReact, FaNodeJs, FaAws, FaPython, FaJava, FaDatabase } from 'react-icons/fa';
-import { SiTypescript, SiCsharp, SiDjango, SiElasticsearch, SiTailwindcss, SiDocker } from 'react-icons/si';
+import { SiTypescript, SiDotnet, SiDjango, SiElasticsearch, SiTailwindcss, SiDocker } from 'react-icons/si';
 import { DiScrum, DiGit } from 'react-icons/di';
 import '../css/SkillsAnimation.css';
 
@@ -11,7 +11,7 @@ const skillsData = [
       { name: 'React', icon: <FaReact />, time: '2 years' },
       { name: 'Node.js', icon: <FaNodeJs />, time: '1.5 years' },
       { name: 'TypeScript', icon: <SiTypescript />, time: '2 years' },
-      { name: 'C#/.NET', icon: <SiCsharp />, time: '1 year' },
+      { name: 'C#/.NET', icon: <SiDotnet />, time: '1 year' },
       { name: 'Django', icon: <SiDjango />, time: '1 year' },
       { name: 'Java', icon: <FaJava />, time: '3 years' },
     ],
