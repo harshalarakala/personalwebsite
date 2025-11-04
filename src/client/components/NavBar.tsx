@@ -14,11 +14,11 @@ const NavBar: React.FC = () => {
     const { state, dispatch } = context;
 
     const getTabClass = (section: string) => {
-        return `content-center text-center h-full cursor-pointer transition-transform duration-500 ease-in-out ${
+        return `content-center text-center h-full cursor-pointer transition-colors duration-200 ${
             state.currentSection === section
-                ? 'text-xl font-bold transform scale-[1.01] text-red-500'
-                : 'text-xl'
-        }${state.currentSection !== section ? ' hover:underline hover:text-red-500' : ''}`;
+                ? 'text-sm font-semibold text-gray-900'
+                : 'text-sm font-medium text-gray-600'
+        }${state.currentSection !== section ? ' hover:text-gray-900' : ''}`;
     };
 
     // Add resize listener to handle screen size changes
@@ -101,7 +101,7 @@ const NavBar: React.FC = () => {
 
             {/* Full-Screen Mobile Menu */}
             <nav
-                className={`fixed top-0 left-0 w-full z-40 lg:flex lg:justify-center lg:items-center lg:h-16 lg:backdrop-blur-lg lg:bg-white/80 ${
+                className={`fixed top-0 left-0 w-full z-40 lg:flex lg:justify-center lg:items-center lg:h-16 lg:bg-white lg:border-b lg:border-gray-200 ${
                     isOpen ? 'flex bg-white h-screen w-screen overflow-y-auto' : 'hidden lg:flex'
                 }`}
             >

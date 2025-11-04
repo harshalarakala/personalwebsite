@@ -161,38 +161,38 @@ const Contact: React.FC = () => {
       </div>
   
       {/* Contact Form */}
-      <div className="max-w-md mx-auto p-4 border border-gray-300 shadow-md rounded-lg bg-slate-200 z-40">
-        <p className="mb-4">
+      <div className="max-w-md mx-auto p-5 sm:p-6 border border-gray-200 shadow-sm rounded-xl bg-white z-40">
+        <p className="mb-6 text-gray-700 text-sm">
           I'd love to hear from you! Whether you have a question, want to collaborate on a project, or just want to say what's up, feel free to reach out.
         </p>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name:</label>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1.5">Name:</label>
             <input
               type="text"
               id="name"
-              className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="w-full p-2.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email:</label>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5">Email:</label>
             <input
               type="email"
               id="email"
-              className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="w-full p-2.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="message" className="block text-sm font-medium text-gray-700">Message:</label>
+            <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1.5">Message:</label>
             <textarea
               id="message"
-              className="mt-1 h-[200px] p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 sm:text-sm"
+              className="w-full h-[200px] p-2.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               required
@@ -200,7 +200,11 @@ const Contact: React.FC = () => {
           </div>
           <button
             type="submit"
-            className={`w-full p-2 mt-2 text-white rounded-md ${isSubmitting ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-900'}`}
+            className={`w-full inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors shadow-sm ${
+              isSubmitting 
+                ? 'bg-gray-400 text-white cursor-not-allowed' 
+                : 'bg-green-600 hover:bg-green-700 text-white'
+            }`}
             disabled={isSubmitting}
           >
             {isSubmitting ? 'Sending...' : 'Submit'}
@@ -208,17 +212,17 @@ const Contact: React.FC = () => {
         </form>
         <button
             onClick={handleSendText}
-          className="w-full p-2 mt-4 text-white bg-green-600 hover:bg-green-900 rounded-md"
+          className="w-full mt-3 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
         >
           Send Text
         </button>
-        <div className="flex justify-between mt-4 ">
+        <div className="flex justify-between gap-3 mt-4">
           {/* GitHub Icon Card */}
           <a
             href="https://github.com/harshalarakala"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-1/2 p-4 border border-gray-300 shadow-md rounded-lg bg-white flex justify-center items-center mr-2 hover:bg-gray-600 transition-colors duration-300 group"
+            className="flex-1 p-4 border border-gray-200 rounded-xl bg-white flex justify-center items-center hover:bg-gray-50 shadow-sm hover:shadow-md transition-colors duration-200 group"
           >
             <img src={github} alt="GitHub" className="h-8 w-8 group-hover:scale-110 transition-transform duration-300" />
           </a>
@@ -228,7 +232,7 @@ const Contact: React.FC = () => {
             href="https://linkedin.com/in/harshalarakala"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-1/2 p-4 border border-gray-300 shadow-md rounded-lg bg-white flex justify-center items-center ml-2 hover:bg-gray-600 transition-colors duration-300 group"
+            className="flex-1 p-4 border border-gray-200 rounded-xl bg-white flex justify-center items-center hover:bg-gray-50 shadow-sm hover:shadow-md transition-colors duration-200 group"
           >
             <img src={linkedIn} alt="LinkedIn" className="h-8 w-8 group-hover:scale-110 transition-transform duration-300" />
           </a>
@@ -242,21 +246,21 @@ const Contact: React.FC = () => {
         isOpen={modalIsOpen}
         onRequestClose={() => setModalIsOpen(false)}
         contentLabel="Contact Options"
-        className="m-auto max-w-sm p-6 bg-white rounded-md shadow-lg"
-        overlayClassName="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center"
+        className="m-auto max-w-sm p-6 bg-white rounded-xl border border-gray-200 shadow-2xl"
+        overlayClassName="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex justify-center items-center"
       >
-        <h2 className="text-xl font-bold mb-4">Send Text Message</h2>
-        <p>How would you like to proceed?</p>
-        <div className="flex justify-between mt-6">
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">Send Text Message</h2>
+        <p className="text-gray-700 mb-6">How would you like to proceed?</p>
+        <div className="flex gap-3">
           <button
             onClick={handleCopyToClipboard}
-            className="w-1/2 p-2 bg-blue-500 text-white rounded-md mr-2"
+            className="flex-1 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
           >
             Copy to Clipboard
           </button>
           <button
             onClick={handleOpenMessages}
-            className="w-1/2 p-2 bg-blue-500 text-white rounded-md ml-2"
+            className="flex-1 inline-flex items-center justify-center rounded-md bg-green-600 hover:bg-green-700 px-4 py-2 text-sm font-medium text-white transition-colors shadow-sm"
           >
             Open iMessage
           </button>

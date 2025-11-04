@@ -43,7 +43,7 @@ const Overview: React.FC = () => {
         <section id="overview" className="relative bg-white text-black p-4 sm:p-6 md:p-8 pb-16 sm:pb-20 md:pb-24 overflow-hidden flex items-center justify-center w-full h-full">
             <div className="flex flex-col self-center w-full max-w-screen-xl mx-auto md:flex-row items-center md:items-start text-center md:text-left space-y-8 md:space-y-0 md:space-x-8 lg:space-x-12 px-4 sm:px-6">
                 <motion.div
-                    className={`w-48 h-48 sm:w-64 sm:h-64 md:w-72 md:h-72 lg:w-80 lg:h-80 xl:w-96 xl:h-96 rounded-full overflow-hidden shadow-lg border-4 border-red-500 flex-shrink-0 mx-auto md:mx-0 ${animate ? 'animate-pulse-border' : ''}`}
+                    className="w-48 h-48 sm:w-64 sm:h-64 md:w-72 md:h-72 lg:w-80 lg:h-80 xl:w-96 xl:h-96 rounded-full overflow-hidden shadow-lg border-4 border-gray-200 flex-shrink-0 mx-auto md:mx-0"
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.8 }}
@@ -62,8 +62,8 @@ const Overview: React.FC = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8 }}
                 >
-                    <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-2 sm:mb-3 md:mb-4">
-                        <span className={` ${animate ? 'animate-pulse-text' : ''}`}>Hi,</span> I'm Harshal Arakala
+                    <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-2 sm:mb-3 md:mb-4 text-gray-900">
+                        Hi, I'm Harshal Arakala
                     </h1>
                     <AnimatePresence mode="wait">
                         <motion.p
@@ -72,7 +72,7 @@ const Overview: React.FC = () => {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -10 }}
                             transition={{ duration: 0.8 }}
-                            className={`text-lg sm:text-xl md:text-2xl font-semibold text-red-500`}
+                            className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-600"
                         >
                             {statements[currentStatement]}
                         </motion.p>
@@ -86,7 +86,7 @@ const Overview: React.FC = () => {
                             href="https://drive.google.com/file/d/1Xv1mTfBa8JXecL5humVqRYjkMm1TVOjC/view?usp=sharing"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={`flex items-center justify-center px-4 sm:px-5 py-2 sm:py-3 bg-red-500 text-white font-bold rounded-lg shadow-lg border-2 sm:border-4 border-red-500 ${animate ? 'animate-pulse-border' : ''} hover:bg-red-600 transition duration-200`}
+                            className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
                         >
                             <FaFileDownload className="mr-2" />
                             Resume
@@ -96,16 +96,16 @@ const Overview: React.FC = () => {
                             href="https://drive.google.com/file/d/1-hgzf2SoU1tZBXIe706HUfJAmr_XoSx3/view?usp=sharing"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={`flex items-center justify-center px-4 sm:px-5 py-2 sm:py-3 bg-red-500 text-white font-bold rounded-lg shadow-lg border-2 sm:border-4 border-red-500 ${animate ? 'animate-pulse-border' : ''} hover:bg-red-600 transition duration-200`}
+                            className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
                         >
                             <FaFileDownload className="mr-2" />
                             Transcript
                         </a>
 
                         <motion.button
-                            className={`flex items-center justify-center px-4 sm:px-5 py-2 sm:py-3 bg-red-500 text-white font-bold rounded-lg shadow-lg border-2 sm:border-4 border-red-500 ${animate ? 'animate-pulse-border' : ''} hover:bg-red-600 transition duration-200`}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
+                            className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
                             onClick={() => handleNavigate('experience')}
                         >
                             <FaBriefcase className="mr-2" />
@@ -113,9 +113,9 @@ const Overview: React.FC = () => {
                         </motion.button>
 
                         <motion.button
-                            className={`flex items-center justify-center px-4 sm:px-5 py-2 sm:py-3 bg-red-500 text-white font-bold rounded-lg shadow-lg border-2 sm:border-4 border-red-500 ${animate ? 'animate-pulse-border' : ''} hover:bg-red-600 transition duration-200`}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
+                            className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
                             onClick={() => handleNavigate('projects')}
                         >
                             <FaBriefcase className="mr-2" />
@@ -126,7 +126,7 @@ const Overview: React.FC = () => {
                             href="https://github.com/harshalarakala"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={`flex items-center justify-center px-4 sm:px-5 py-2 sm:py-3 bg-gray-900 text-white font-bold rounded-lg shadow-lg border-2 sm:border-4 border-gray-900 ${animate ? 'animate-pulse-border' : ''} hover:bg-black transition duration-200`}
+                            className="inline-flex items-center justify-center rounded-md bg-gray-900 hover:bg-black px-4 py-2 text-sm font-medium text-white transition-colors shadow-sm"
                         >
                             <FaGithub className="mr-2" />
                             GitHub
@@ -136,16 +136,16 @@ const Overview: React.FC = () => {
                             href="https://www.linkedin.com/in/harshalarakala"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={`flex items-center justify-center px-4 sm:px-5 py-2 sm:py-3 bg-blue-600 text-white font-bold rounded-lg shadow-lg border-2 sm:border-4 border-blue-600 ${animate ? 'animate-pulse-border' : ''} hover:bg-blue-700 transition duration-200`}
+                            className="inline-flex items-center justify-center rounded-md border border-blue-300 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 hover:bg-blue-100 transition-colors shadow-sm"
                         >
                             <FaLinkedin className="mr-2" />
                             LinkedIn
                         </a>
 
                         <motion.button
-                            className={`flex items-center justify-center px-4 sm:px-5 py-2 sm:py-3 bg-gray-200 text-gray-900 font-bold rounded-lg shadow-lg border-2 sm:border-4 border-gray-300 ${animate ? 'animate-pulse-border' : ''} hover:bg-gray-300 transition duration-200`}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
+                            className="inline-flex items-center justify-center rounded-md bg-green-600 hover:bg-green-700 px-4 py-2 text-sm font-medium text-white transition-colors shadow-sm"
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
                             onClick={() => handleNavigate('contact')}
                         >
                             <FaPhone className="mr-2" />

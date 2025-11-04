@@ -50,7 +50,7 @@ const Skills: React.FC = () => {
     <div className="max-w-6xl mx-auto p-6 py-8 w-full h-full flex flex-col justify-center">
       {skillsData.map((categoryData, categoryIndex) => (
         <div key={categoryIndex} className="mb-8">
-          <h3 className="text-2xl font-semibold mb-4">{categoryData.category}</h3>
+          <h3 className="text-2xl font-semibold mb-4 text-gray-900">{categoryData.category}</h3>
           <SkillCarousel items={categoryData.items} />
         </div>
       ))}
@@ -143,7 +143,7 @@ const SkillCarousel: React.FC<{ items: Array<{ name: string, icon: JSX.Element, 
       className="carousel-wrapper relative flex items-center justify-center overflow-hidden"
       style={{ width: '100%', maxWidth: '1200px', margin: '0 auto' }}
     >
-      <button className="prev absolute left-0 text-2xl p-2 bg-gray-700 text-white rounded-full" onClick={prevSlide}>
+      <button className="prev absolute left-0 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm" onClick={prevSlide}>
         ‹
       </button>
       <div
@@ -169,15 +169,15 @@ const SkillCarousel: React.FC<{ items: Array<{ name: string, icon: JSX.Element, 
               width: '200px',
             }}
           >
-            <div className="card p-4 border border-gray-300 rounded-lg shadow-lg bg-white flex flex-col items-center hover:bg-gray-100 transform transition-all duration-300 ease-out">
-              <div className="text-4xl text-blue-500 mb-4">{item.icon}</div>
-              <h4 className="text-xl font-medium">{item.name}</h4>
-              <p className="text-gray-600">Experience: {item.time}</p>
+            <div className="card p-4 border border-gray-200 rounded-xl bg-white flex flex-col items-center hover:bg-gray-50 shadow-sm hover:shadow-md transition-all duration-300 ease-out">
+              <div className="text-4xl text-gray-700 mb-4">{item.icon}</div>
+              <h4 className="text-lg font-semibold text-gray-900">{item.name}</h4>
+              <p className="text-sm text-gray-600 mt-1">Experience: {item.time}</p>
             </div>
           </div>
         ))}
       </div>
-      <button className="next absolute right-0 text-2xl p-2 bg-gray-700 text-white rounded-full" onClick={nextSlide}>
+      <button className="next absolute right-0 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm" onClick={nextSlide}>
         ›
       </button>
     </div>
