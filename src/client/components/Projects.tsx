@@ -635,8 +635,8 @@ const Projects: React.FC = () => {
             onClick={(e) => e.stopPropagation()}
           >
             {!isEditing && active.media && (
-              <div className="aspect-video w-full overflow-hidden flex-shrink-0">
-                <img src={active.media} alt={active.title} className="h-full w-full object-cover" />
+              <div className="w-full overflow-hidden flex-shrink-0 max-h-[40vh] hidden 2xl:block">
+                <img src={active.media} alt={active.title} className="w-full h-auto max-h-[40vh] object-contain" />
               </div>
             )}
             <div className="flex flex-col flex-1 overflow-hidden">
@@ -661,23 +661,19 @@ const Projects: React.FC = () => {
                       <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-2">Edit Project</h2>
                     )}
                   </div>
-                  <button
-                    onClick={() => {
-                      if (isEditing) {
-                        setIsEditing(false);
-                      } else {
-                        setActive(null);
-                      }
-                    }}
-                    onMouseMove={handleMouseMove}
-                    className="liquid-glass-button flex-shrink-0 px-3 py-1.5 text-sm font-medium text-gray-700"
-                    style={{ 
-                      background: 'rgba(255, 255, 255, 0.8)', 
-                      borderColor: 'rgba(255, 255, 255, 0.6)' 
-                    } as React.CSSProperties}
-                  >
-                    {isEditing ? 'Cancel' : 'Close'}
-                  </button>
+                  {isEditing && (
+                    <button
+                      onClick={() => setIsEditing(false)}
+                      onMouseMove={handleMouseMove}
+                      className="liquid-glass-button flex-shrink-0 px-3 py-1.5 text-sm font-medium text-gray-700"
+                      style={{ 
+                        background: 'rgba(255, 255, 255, 0.8)', 
+                        borderColor: 'rgba(255, 255, 255, 0.6)' 
+                      } as React.CSSProperties}
+                    >
+                      Cancel
+                    </button>
+                  )}
                 </div>
               </div>
 
