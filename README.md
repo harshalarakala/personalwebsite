@@ -50,13 +50,16 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 
 git checkout main
 npm run build
+rm -rf /tmp/build  # Clear old build files
 cp -r build /tmp/build
 git checkout gh-pages
 
 MANUALLY REMOVE EVERYTHING BUT CNAME, .gitignore, and .git
 
+rm -rf /tmp/build/.git  # Remove any .git from temp if it exists
 cp -r /tmp/build/* ./
-cp -r /tmp/build/. ./
+cp -r /tmp/build/.[!.]* ./ 2>/dev/null || true  # Copy hidden files (excluding . and ..)
 git add .
 git commit -m "Deploy latest build from main"
 git push origin gh-pages
+git checkout main  # Return to main branch
