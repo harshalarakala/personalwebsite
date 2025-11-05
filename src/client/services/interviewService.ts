@@ -14,7 +14,7 @@ import { db } from "./firebaseConfig";
 export type Season = 'Fall' | 'Spring' | 'Summer';
 export type PositionType = 'Co-Op' | 'Intern' | 'New Grad' | 'SWE1' | 'SWE2' | 'Senior SWE';
 export type PayType = 'Hourly' | 'Yearly';
-export type InterviewRound = 'Technical' | 'Super Day' | 'Hiring Manager' | 'Behavioral' | 'Phone Screen';
+export type InterviewRound = 'Technical' | 'Super Day' | 'Hiring Manager' | 'Behavioral' | 'Phone Screen' | 'Team Matching' | 'Headcounted';
 export type WorkType = 'Remote' | 'Hybrid' | 'In Person';
 
 export interface Interview {
@@ -28,9 +28,10 @@ export interface Interview {
   year: number;
   positionType: PositionType;
   offer: boolean;
+  withdrew?: boolean; // If true, user withdrew from the process
   pay?: number | null; // Only if offer is true
   payType?: PayType | null; // Only if offer is true
-  round?: InterviewRound | null; // Only if offer is false
+  round?: InterviewRound | null; // Only if offer is false and withdrew is false
   rating?: number | null; // Public rating 1-5 stars
   interviewNotes: string; // Private notes
   createdAt?: Timestamp;

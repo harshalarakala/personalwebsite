@@ -62,6 +62,7 @@ const CareerLadder: React.FC = () => {
   const [editYear, setEditYear] = useState<number>(new Date().getFullYear());
   const [editPositionType, setEditPositionType] = useState<PositionType>('New Grad');
   const [editOffer, setEditOffer] = useState(false);
+  const [editWithdrew, setEditWithdrew] = useState(false);
   const [editPay, setEditPay] = useState<number | null>(null);
   const [editPayType, setEditPayType] = useState<PayType>('Yearly');
   const [editRound, setEditRound] = useState<InterviewRound | null>(null);
@@ -71,13 +72,14 @@ const CareerLadder: React.FC = () => {
   // Create form state
   const [newCompanyName, setNewCompanyName] = useState('');
   const [newCompanyImageUrl, setNewCompanyImageUrl] = useState('');
-  const [newPositionName, setNewPositionName] = useState('');
+  const [newPositionName, setNewPositionName] = useState('Software Engineer');
   const [newLocation, setNewLocation] = useState('');
   const [newWorkType, setNewWorkType] = useState<WorkType | null>(null);
-  const [newSeason, setNewSeason] = useState<Season>('Fall');
-  const [newYear, setNewYear] = useState<number>(new Date().getFullYear());
+  const [newSeason, setNewSeason] = useState<Season>('Summer');
+  const [newYear, setNewYear] = useState<number>(new Date().getFullYear() + 1);
   const [newPositionType, setNewPositionType] = useState<PositionType>('New Grad');
   const [newOffer, setNewOffer] = useState(false);
+  const [newWithdrew, setNewWithdrew] = useState(false);
   const [newPay, setNewPay] = useState<number | null>(null);
   const [newPayType, setNewPayType] = useState<PayType>('Yearly');
   const [newRound, setNewRound] = useState<InterviewRound | null>(null);
@@ -223,25 +225,33 @@ const CareerLadder: React.FC = () => {
         return filtered.sort((a, b) => {
           // First sort by year (descending)
           if (a.year !== b.year) return b.year - a.year;
-          // Within same year, sort by pay (highest first) - normalized to yearly
+          // Within same year, sort by season (Fall, Summer, Spring)
+          const seasonOrder = { 'Fall': 1, 'Summer': 2, 'Spring': 3 };
+          if (seasonOrder[a.season] !== seasonOrder[b.season]) {
+            return seasonOrder[a.season] - seasonOrder[b.season];
+          }
+          // Within same season, sort by pay (highest first) - normalized to yearly
           const payA = getYearlyPay(a);
           const payB = getYearlyPay(b);
           if (payA !== payB) return payB - payA;
-          // If same pay or no pay, sort by season
-          const seasonOrder = { 'Fall': 1, 'Summer': 2, 'Spring': 3 };
-          return seasonOrder[a.season] - seasonOrder[b.season];
+          // If same pay or no pay, sort by position name as tiebreaker
+          return a.positionName.localeCompare(b.positionName);
         });
       case 'year-asc':
         return filtered.sort((a, b) => {
           // First sort by year (ascending)
           if (a.year !== b.year) return a.year - b.year;
-          // Within same year, sort by pay (highest first) - normalized to yearly
+          // Within same year, sort by season (Fall, Summer, Spring)
+          const seasonOrder = { 'Fall': 1, 'Summer': 2, 'Spring': 3 };
+          if (seasonOrder[a.season] !== seasonOrder[b.season]) {
+            return seasonOrder[a.season] - seasonOrder[b.season];
+          }
+          // Within same season, sort by pay (highest first) - normalized to yearly
           const payA = getYearlyPay(a);
           const payB = getYearlyPay(b);
           if (payA !== payB) return payB - payA;
-          // If same pay or no pay, sort by season
-          const seasonOrder = { 'Spring': 1, 'Summer': 2, 'Fall': 3 };
-          return seasonOrder[a.season] - seasonOrder[b.season];
+          // If same pay or no pay, sort by position name as tiebreaker
+          return a.positionName.localeCompare(b.positionName);
         });
       case 'position':
         return filtered.sort((a, b) => a.positionName.localeCompare(b.positionName));
@@ -262,6 +272,7 @@ const CareerLadder: React.FC = () => {
     setEditYear(interview.year);
     setEditPositionType(interview.positionType);
     setEditOffer(interview.offer || false);
+    setEditWithdrew(interview.withdrew || false);
     setEditPay(interview.pay || null);
     setEditPayType(interview.payType || 'Yearly');
     setEditRound(interview.round || null);
@@ -273,13 +284,14 @@ const CareerLadder: React.FC = () => {
     setIsCreating(true);
     setNewCompanyName('');
     setNewCompanyImageUrl('');
-    setNewPositionName('');
+    setNewPositionName('Software Engineer');
     setNewLocation('');
     setNewWorkType(null);
-    setNewSeason('Fall');
-    setNewYear(new Date().getFullYear());
+    setNewSeason('Summer');
+    setNewYear(new Date().getFullYear() + 1);
     setNewPositionType('New Grad');
     setNewOffer(false);
+    setNewWithdrew(false);
     setNewPay(null);
     setNewPayType('Yearly');
     setNewRound(null);
@@ -306,9 +318,10 @@ const CareerLadder: React.FC = () => {
         year: editYear,
         positionType: editPositionType,
         offer: editOffer,
-        pay: editOffer ? editPay : null,
-        payType: editOffer ? editPayType : null,
-        round: !editOffer ? editRound : null,
+        withdrew: editWithdrew,
+        pay: editOffer && !editWithdrew ? editPay : null,
+        payType: editOffer && !editWithdrew ? editPayType : null,
+        round: !editOffer && !editWithdrew ? editRound : null,
         rating: editRating,
         interviewNotes: editInterviewNotes
       };
@@ -335,9 +348,10 @@ const CareerLadder: React.FC = () => {
         year: newYear,
         positionType: newPositionType,
         offer: newOffer,
-        pay: newOffer ? newPay : null,
-        payType: newOffer ? newPayType : null,
-        round: !newOffer ? newRound : null,
+        withdrew: newWithdrew,
+        pay: newOffer && !newWithdrew ? newPay : null,
+        payType: newOffer && !newWithdrew ? newPayType : null,
+        round: !newOffer && !newWithdrew ? newRound : null,
         rating: newRating,
         interviewNotes: newInterviewNotes
       };
@@ -354,7 +368,7 @@ const CareerLadder: React.FC = () => {
       // Reset form
       setNewCompanyName('');
       setNewCompanyImageUrl('');
-      setNewPositionName('');
+      setNewPositionName('Software Engineer');
       setNewLocation('');
       setNewWorkType(null);
       setNewSeason('Fall');
@@ -510,7 +524,7 @@ const CareerLadder: React.FC = () => {
   const seasons: Season[] = ['Fall', 'Spring', 'Summer'];
   const positionTypes: PositionType[] = ['Co-Op', 'Intern', 'New Grad', 'SWE1', 'SWE2', 'Senior SWE'];
   const payTypes: PayType[] = ['Hourly', 'Yearly'];
-  const interviewRounds: InterviewRound[] = ['Technical', 'Super Day', 'Hiring Manager', 'Behavioral', 'Phone Screen'];
+  const interviewRounds: InterviewRound[] = ['Technical', 'Super Day', 'Hiring Manager', 'Behavioral', 'Phone Screen', 'Team Matching', 'Headcounted'];
   const workTypes: WorkType[] = ['Remote', 'Hybrid', 'In Person'];
 
   if (isLoading) {
@@ -718,7 +732,11 @@ const CareerLadder: React.FC = () => {
                       <span className="inline-flex items-center rounded-full border border-gray-200 bg-gray-50 px-2.5 py-0.5 text-xs text-gray-600">
                         {interview.positionType}
                       </span>
-                      {interview.offer ? (
+                      {interview.withdrew ? (
+                        <span className="inline-flex items-center rounded-full border border-purple-300 bg-purple-50 px-2.5 py-0.5 text-xs text-purple-700 font-semibold">
+                          ↻ Withdrew
+                        </span>
+                      ) : interview.offer ? (
                         <span className="inline-flex items-center rounded-full border border-green-200 bg-green-50 px-2.5 py-0.5 text-xs text-green-700 font-semibold">
                           ✓ Offer
                         </span>
@@ -727,12 +745,12 @@ const CareerLadder: React.FC = () => {
                           ✗ Rejected
                         </span>
                       )}
-                      {interview.offer && interview.pay && (
+                      {interview.offer && !interview.withdrew && interview.pay && (
                         <span className="inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-2.5 py-0.5 text-xs text-blue-700 font-semibold">
                           ${interview.pay.toLocaleString()} {interview.payType === 'Hourly' ? '/hr' : '/yr'} USD
                         </span>
                       )}
-                      {!interview.offer && interview.round && (
+                      {!interview.offer && !interview.withdrew && interview.round && (
                         <span className="inline-flex items-center rounded-full border border-orange-200 bg-orange-50 px-2.5 py-0.5 text-xs text-orange-700 font-semibold">
                           Rejected at: {interview.round}
                         </span>
@@ -816,23 +834,7 @@ const CareerLadder: React.FC = () => {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="p-5 sm:p-6 pb-4 border-b border-gray-200 flex-shrink-0">
-                <div className="flex items-start justify-between gap-4">
-                  <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">Edit Interview</h2>
-                  <button
-                    onClick={() => {
-                      setIsEditing(false);
-                      setActiveInterview(null);
-                    }}
-                    onMouseMove={handleMouseMove}
-                    className="liquid-glass-button flex-shrink-0 px-3 py-1.5 text-sm font-medium text-gray-700"
-                    style={{ 
-                      background: 'rgba(255, 255, 255, 0.8)', 
-                      borderColor: 'rgba(255, 255, 255, 0.6)' 
-                    } as React.CSSProperties}
-                  >
-                    Close
-                  </button>
-                </div>
+                <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">Edit Interview</h2>
               </div>
 
               <div className="flex-1 overflow-y-auto px-5 sm:px-6 py-4 sm:py-5">
@@ -938,13 +940,30 @@ const CareerLadder: React.FC = () => {
                       <input
                         type="checkbox"
                         checked={editOffer}
-                        onChange={(e) => setEditOffer(e.target.checked)}
+                        onChange={(e) => {
+                          setEditOffer(e.target.checked);
+                          if (e.target.checked) setEditWithdrew(false);
+                        }}
                         className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                       />
                       <span className="text-sm font-medium text-gray-700">Received Offer</span>
                     </label>
                   </div>
-                  {editOffer && (
+                  <div>
+                    <label className="flex items-center space-x-2 mb-1.5">
+                      <input
+                        type="checkbox"
+                        checked={editWithdrew}
+                        onChange={(e) => {
+                          setEditWithdrew(e.target.checked);
+                          if (e.target.checked) setEditOffer(false);
+                        }}
+                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      />
+                      <span className="text-sm font-medium text-gray-700">Withdrew</span>
+                    </label>
+                  </div>
+                  {editOffer && !editWithdrew && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1.5">Pay (USD) *</label>
@@ -973,7 +992,7 @@ const CareerLadder: React.FC = () => {
                       </div>
                     </div>
                   )}
-                  {!editOffer && (
+                  {!editOffer && !editWithdrew && (
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1.5">Round Reached *</label>
                       <select
@@ -1193,13 +1212,30 @@ const CareerLadder: React.FC = () => {
                       <input
                         type="checkbox"
                         checked={newOffer}
-                        onChange={(e) => setNewOffer(e.target.checked)}
+                        onChange={(e) => {
+                          setNewOffer(e.target.checked);
+                          if (e.target.checked) setNewWithdrew(false);
+                        }}
                         className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                       />
                       <span className="text-sm font-medium text-gray-700">Received Offer</span>
                     </label>
                   </div>
-                  {newOffer && (
+                  <div>
+                    <label className="flex items-center space-x-2 mb-1.5">
+                      <input
+                        type="checkbox"
+                        checked={newWithdrew}
+                        onChange={(e) => {
+                          setNewWithdrew(e.target.checked);
+                          if (e.target.checked) setNewOffer(false);
+                        }}
+                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      />
+                      <span className="text-sm font-medium text-gray-700">Withdrew</span>
+                    </label>
+                  </div>
+                  {newOffer && !newWithdrew && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1.5">Pay (USD) *</label>
@@ -1228,7 +1264,7 @@ const CareerLadder: React.FC = () => {
                       </div>
                     </div>
                   )}
-                  {!newOffer && (
+                  {!newOffer && !newWithdrew && (
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1.5">Round Reached *</label>
                       <select
@@ -1358,7 +1394,11 @@ const CareerLadder: React.FC = () => {
                       </div>
                       <div className="bg-white rounded-xl border border-gray-200 p-4 sm:col-span-2">
                         <div className="text-xs uppercase tracking-wide text-gray-500 mb-1">Offer / Result</div>
-                        {activeInterview.offer ? (
+                        {activeInterview.withdrew ? (
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="inline-flex items-center rounded-full border-2 border-purple-300 bg-purple-100 px-3 py-1.5 text-sm font-bold text-purple-800">↻ Withdrew</span>
+                          </div>
+                        ) : activeInterview.offer ? (
                           <div className="flex flex-wrap items-center gap-2">
                             <span className="inline-flex items-center rounded-full border-2 border-green-300 bg-green-100 px-3 py-1.5 text-sm font-bold text-green-800">✓ Offer</span>
                             {activeInterview.pay && (
