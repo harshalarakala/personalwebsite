@@ -1,4 +1,6 @@
 import React, { useContext } from 'react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import NavBar from './components/NavBar';
 import { SectionProvider, AppContext } from './context/AppContext';
 import Overview from './components/Overview';
@@ -31,7 +33,9 @@ const App: React.FC = () => {
           <main className='pt-16 flex-grow flex items-center justify-center'>
             <SectionRenderer />
           </main>
-          <CareerLadderButton onMouseMove={handleMouseMove} />
+          {/* Global Toasts */}
+          <ToastContainer position="top-right" />
+          {/* Floating button removed in favor of centered button on Overview */}
         </div>
       </SectionProvider>
     </GoogleOAuthProvider>

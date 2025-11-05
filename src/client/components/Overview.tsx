@@ -1,8 +1,10 @@
 import React, { useContext, useState, useEffect } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { AppContext } from '../context/AppContext';
 import profileImage from '../images/profile.jpeg';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaFileDownload, FaBriefcase, FaPhone, FaGithub, FaLinkedin, FaCode } from 'react-icons/fa';
+import { FaFileDownload, FaBriefcase, FaPhone, FaGithub, FaLinkedin, FaCode, FaTasks } from 'react-icons/fa';
 import './CubeStyles.css';
 
 const Overview: React.FC = () => {
@@ -34,6 +36,34 @@ const Overview: React.FC = () => {
             clearTimeout(timer);
         };
     }, [statements.length]);
+
+    // Show toast only once per full page load (first time Overview mounts)
+    useEffect(() => {
+        const w = window as any;
+        if (w.__interviewsToastShown) return;
+
+        const msg = (
+            <span>
+                New Feature: Check out My Interviews tab to see an overview of all companies I've interviewed at!{' '}
+                <button
+                    onClick={() => handleNavigate('careerladder')}
+                    className="underline text-blue-600 hover:text-blue-700"
+                >
+                    Explore now!
+                </button>
+            </span>
+        );
+        // small delay to ensure global toast container is mounted
+        setTimeout(() => {
+            toast.info(msg, {
+                position: 'top-right',
+                autoClose: 7000,
+                closeOnClick: true,
+                pauseOnHover: true,
+            });
+        }, 250);
+        w.__interviewsToastShown = true;
+    }, []);
 
     const handleNavigate = (path: string) => {
         dispatch({ type: 'SET_SECTION', payload: path });
@@ -214,6 +244,7 @@ const Overview: React.FC = () => {
                     </div>
                 </motion.div>
             </div>
+            {/* Toasts rendered by App-level container */}
         </section>
     );
 };

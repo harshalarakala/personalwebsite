@@ -298,7 +298,6 @@ const Contact: React.FC = () => {
           </a>
         </div>
   
-        <ToastContainer />
       </div>
   
       {/* Text Message Modal */}
@@ -336,6 +335,8 @@ const Contact: React.FC = () => {
           </button>
         </div>
       </Modal>
+      {/* Global toast container at viewport level */}
+      <ToastContainer position="top-right" />
     </div>
   );
 }  

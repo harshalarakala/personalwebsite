@@ -20,5 +20,14 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app, "main");
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
+// Prompt account selection to avoid silent failures in popup flows (support older SDKs)
+try {
+  const anyProvider: any = googleProvider as any;
+  if (typeof anyProvider.setCustomParameters === 'function') {
+    anyProvider.setCustomParameters({ prompt: 'select_account' });
+  } else {
+    anyProvider.customParameters = { prompt: 'select_account' };
+  }
+} catch {}
 
 export { db, auth, googleProvider }; 

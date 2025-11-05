@@ -13,12 +13,26 @@ import {
   updateInterview, 
   deleteInterview 
 } from '../services/interviewService';
+import {
+  AccessRequest,
+  submitAccessRequest,
+  getPendingAccessRequests,
+  approveAccessRequest,
+  denyAccessRequest,
+  checkAccessGrant,
+  checkUserRequestStatus,
+  getAccessGrants,
+  revokeAccessGrant
+} from '../services/interviewAccessService';
 import MDEditor from '@uiw/react-md-editor';
+import { toast } from 'react-toastify';
 import '../css/LiquidGlass.css';
 
 const CareerLadder: React.FC = () => {
   const [interviews, setInterviews] = useState<Interview[]>([]);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // any signed-in user
+  const [canEdit, setCanEdit] = useState(false); // owner-only edits
+  const [canViewNotes, setCanViewNotes] = useState(false); // owner-only notes for now
   const [userData, setUserData] = useState<User | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
@@ -28,6 +42,11 @@ const CareerLadder: React.FC = () => {
   const [filterSeason, setFilterSeason] = useState<Season | ''>('');
   const [filterYear, setFilterYear] = useState<number | ''>('');
   const [searchText, setSearchText] = useState('');
+  const [showAccessRequestsModal, setShowAccessRequestsModal] = useState(false);
+  const [pendingRequests, setPendingRequests] = useState<AccessRequest[]>([]);
+  const [requestLoading, setRequestLoading] = useState(false);
+  const [requestStatus, setRequestStatus] = useState<'none' | 'pending' | 'approved' | 'denied'>('none');
+  const [grants, setGrants] = useState<{ id?: string; email: string; grantedAt?: any; grantedBy?: string }[]>([]);
 
   // Edit form state
   const [editCompanyName, setEditCompanyName] = useState('');
@@ -63,13 +82,25 @@ const CareerLadder: React.FC = () => {
 
   // Listen to authentication state changes
   useEffect(() => {
-    const unsubscribe = onAuthChange((user) => {
-      if (user && isAuthorizedEditor(user)) {
+    const unsubscribe = onAuthChange(async (user) => {
+      if (user) {
         setIsAuthenticated(true);
         setUserData(user);
+        const authorized = isAuthorizedEditor(user);
+        setCanEdit(authorized);
+        
+        // Check if user has access to notes (owner or granted access)
+        if (authorized) {
+          setCanViewNotes(true);
+        } else {
+          const hasAccess = await checkAccessGrant(user.email || '');
+          setCanViewNotes(hasAccess);
+        }
       } else {
         setIsAuthenticated(false);
         setUserData(null);
+        setCanEdit(false);
+        setCanViewNotes(false);
       }
     });
     return () => unsubscribe();
@@ -91,6 +122,42 @@ const CareerLadder: React.FC = () => {
 
     fetchInterviews();
   }, []);
+
+  // Fetch pending access requests (owner only)
+  useEffect(() => {
+    if (canEdit) {
+      const fetchRequests = async () => {
+        try {
+          const requests = await getPendingAccessRequests();
+          setPendingRequests(requests);
+          const g = await getAccessGrants();
+          setGrants(g);
+        } catch (error) {
+          console.error('Error fetching access requests:', error);
+        }
+      };
+      fetchRequests();
+      
+      // Refresh when modal opens
+      const interval = setInterval(fetchRequests, 5000); // Poll every 5 seconds when owner
+      return () => clearInterval(interval);
+    }
+  }, [canEdit]);
+
+  // Check if user has already requested access
+  useEffect(() => {
+    if (isAuthenticated && userData?.email && !canEdit) {
+      const checkRequest = async () => {
+        try {
+          const status = await checkUserRequestStatus(userData.email || '');
+          setRequestStatus(status);
+        } catch (error) {
+          console.error('Error checking request status:', error);
+        }
+      };
+      checkRequest();
+    }
+  }, [isAuthenticated, userData, canEdit]);
 
   // Mouse tracking for liquid glass effect
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
@@ -319,6 +386,83 @@ const CareerLadder: React.FC = () => {
     }
   };
 
+  const handleRequestAccess = async () => {
+    if (!userData?.email) return;
+    
+    setRequestLoading(true);
+    try {
+      await submitAccessRequest(userData.email);
+      setRequestStatus('pending');
+      toast.success('Request submitted! You\'ll be notified when it\'s reviewed.');
+    } catch (error: any) {
+      if (error.message?.includes("already have")) {
+        setRequestStatus('pending');
+        toast.info('You already have a pending or approved request.');
+      } else {
+        toast.error('Failed to submit request: ' + (error.message || 'Unknown error'));
+      }
+    } finally {
+      setRequestLoading(false);
+    }
+  };
+
+  const handleApproveRequest = async (request: AccessRequest) => {
+    if (!userData?.email || !request.id) return;
+    
+    try {
+      await approveAccessRequest(request.id, request.email, userData.email);
+      // Refresh requests list
+      const requests = await getPendingAccessRequests();
+      setPendingRequests(requests);
+      toast.success(`Access granted to ${request.email}`);
+    } catch (error) {
+      console.error("Error approving request:", error);
+      toast.error('Failed to approve request');
+    }
+  };
+
+  const handleDenyRequest = async (request: AccessRequest) => {
+    if (!userData?.email || !request.id) return;
+    
+    try {
+      await denyAccessRequest(request.id, request.email, userData.email);
+      // Refresh requests list
+      const requests = await getPendingAccessRequests();
+      setPendingRequests(requests);
+    } catch (error) {
+      console.error("Error denying request:", error);
+      toast.error('Failed to deny request');
+    }
+  };
+
+  const handleOpenRequestsModal = async () => {
+    setShowAccessRequestsModal(true);
+    if (canEdit) {
+      // Refresh requests when opening modal
+      try {
+        const requests = await getPendingAccessRequests();
+        setPendingRequests(requests);
+        const g = await getAccessGrants();
+        setGrants(g);
+      } catch (error) {
+        console.error('Error fetching access requests:', error);
+      }
+    }
+  };
+
+  const handleRevokeGrant = async (grantId?: string) => {
+    if (!grantId) return;
+    try {
+      await revokeAccessGrant(grantId);
+      toast.success('Access revoked');
+      const g = await getAccessGrants();
+      setGrants(g);
+    } catch (error) {
+      console.error('Error revoking grant:', error);
+      toast.error('Failed to revoke access');
+    }
+  };
+
   const seasons: Season[] = ['Fall', 'Spring', 'Summer'];
   const positionTypes: PositionType[] = ['Co-Op', 'Intern', 'New Grad', 'SWE1', 'SWE2', 'Senior SWE'];
   const payTypes: PayType[] = ['Hourly', 'Yearly'];
@@ -339,19 +483,78 @@ const CareerLadder: React.FC = () => {
         <div className="mb-6 sm:mb-8">
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">My Interview Experiences</h1>
-            {isAuthenticated && (
-              <button
-                onClick={handleCreateNew}
-                onMouseMove={handleMouseMove}
-                className="liquid-glass-button liquid-glass-green inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white"
-                style={{ 
-                  background: 'rgba(22, 163, 74, 0.8)', 
-                  borderColor: 'rgba(22, 163, 74, 0.6)' 
-                } as React.CSSProperties}
-              >
-                + New Interview
-              </button>
-            )}
+            <div className="flex items-center gap-3">
+              {canEdit && (
+                <>
+                  <button
+                    onClick={handleOpenRequestsModal}
+                    onMouseMove={handleMouseMove}
+                    className="liquid-glass-button inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700"
+                    style={{ 
+                      background: 'rgba(255, 255, 255, 0.8)', 
+                      borderColor: 'rgba(255, 255, 255, 0.6)' 
+                    } as React.CSSProperties}
+                  >
+                    View Requests {pendingRequests.length > 0 && `(${pendingRequests.length})`}
+                  </button>
+                  <button
+                    onClick={handleCreateNew}
+                    onMouseMove={handleMouseMove}
+                    className="liquid-glass-button liquid-glass-green inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white"
+                    style={{ 
+                      background: 'rgba(22, 163, 74, 0.8)', 
+                      borderColor: 'rgba(22, 163, 74, 0.6)' 
+                    } as React.CSSProperties}
+                  >
+                    + New Interview
+                  </button>
+                </>
+              )}
+              {!canEdit && !canViewNotes && (
+                <button
+                  onClick={isAuthenticated ? handleRequestAccess : undefined}
+                  disabled={!isAuthenticated || requestLoading || requestStatus === 'pending'}
+                  onMouseMove={isAuthenticated ? handleMouseMove : undefined}
+                  className={`liquid-glass-button inline-flex items-center justify-center px-4 py-2 text-sm font-medium ${
+                    !isAuthenticated || requestStatus === 'pending' 
+                      ? 'opacity-70 cursor-not-allowed text-gray-100' 
+                      : 'text-white'
+                  }`}
+                  style={!isAuthenticated ? {
+                    // signed out: greyed
+                    background: 'linear-gradient(135deg, rgba(160,160,160,0.7), rgba(120,120,120,0.6))',
+                    borderColor: 'rgba(200, 200, 200, 0.5)'
+                  } : requestStatus === 'pending' ? {
+                    // pending: amber
+                    background: 'linear-gradient(135deg, rgba(251, 191, 36, 0.9), rgba(245, 158, 11, 0.85))',
+                    borderColor: 'rgba(245, 158, 11, 0.6)'
+                  } : {
+                    // ready to request: vibrant purple/blue
+                    background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.95), rgba(59, 130, 246, 0.9))',
+                    borderColor: 'rgba(99, 102, 241, 0.6)'
+                  } as React.CSSProperties}
+                >
+                  {!isAuthenticated 
+                    ? 'Please sign in to request interview notes'
+                    : requestStatus === 'pending'
+                    ? 'Request Submitted'
+                    : 'Request All Interview Notes'
+                  }
+                </button>
+              )}
+              {!canEdit && canViewNotes && (
+                <button
+                  disabled
+                  className="liquid-glass-button inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-white cursor-default"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.95), rgba(5, 150, 105, 0.9))',
+                    borderColor: 'rgba(16, 185, 129, 0.6)'
+                  } as React.CSSProperties}
+                >
+                  Access Granted
+                </button>
+              )}
+            </div>
           </div>
           
           {/* Filters and Sort */}
@@ -499,7 +702,7 @@ const CareerLadder: React.FC = () => {
                   </div>
                 </div>
 
-                {isAuthenticated && (
+                {canEdit && (
                   <div className="mt-4 flex items-center gap-2 flex-wrap">
                     <button
                       onClick={(e) => {
@@ -536,10 +739,10 @@ const CareerLadder: React.FC = () => {
           ))}
         </div>
 
-        {sortedInterviews.length === 0 && (
+            {sortedInterviews.length === 0 && (
           <div className="text-center py-12">
             <p className="text-gray-500 mb-4">No interviews recorded yet.</p>
-            {isAuthenticated && (
+            {canEdit && (
               <button
                 onClick={handleCreateNew}
                 onMouseMove={handleMouseMove}
@@ -565,7 +768,7 @@ const CareerLadder: React.FC = () => {
             }}
           >
             <div
-              className="max-w-3xl w-full max-h-[90vh] rounded-xl border border-gray-200 bg-white text-gray-900 shadow-2xl flex flex-col overflow-hidden"
+              className="max-w-6xl w-full max-h-[90vh] rounded-xl border border-gray-200 bg-white text-gray-900 shadow-2xl flex flex-col overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="p-5 sm:p-6 pb-4 border-b border-gray-200 flex-shrink-0">
@@ -811,9 +1014,9 @@ const CareerLadder: React.FC = () => {
                 >
                   Cancel
                 </button>
-              </div>
             </div>
           </div>
+        </div>
         )}
 
         {/* Create Modal */}
@@ -823,7 +1026,7 @@ const CareerLadder: React.FC = () => {
             onClick={() => setIsCreating(false)}
           >
             <div
-              className="max-w-3xl w-full max-h-[90vh] rounded-xl border border-gray-200 bg-white text-gray-900 shadow-2xl flex flex-col overflow-hidden"
+              className="max-w-5xl w-full max-h-[90vh] rounded-xl border border-gray-200 bg-white text-gray-900 shadow-2xl flex flex-col overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="p-5 sm:p-6 pb-4 border-b border-gray-200 flex-shrink-0">
@@ -1062,87 +1265,106 @@ const CareerLadder: React.FC = () => {
             onClick={() => setActiveInterview(null)}
           >
             <div
-              className="max-w-3xl w-full max-h-[90vh] rounded-xl border border-gray-200 bg-white text-gray-900 shadow-2xl flex flex-col overflow-hidden"
+              className="max-w-5xl w-full max-h-[90vh] rounded-xl border border-gray-200 bg-white text-gray-900 shadow-2xl flex flex-col overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
-              {activeInterview.companyImageUrl && (
-                <div className="aspect-video w-full overflow-hidden flex-shrink-0">
-                  <img src={activeInterview.companyImageUrl} alt={activeInterview.positionName} className="h-full w-full object-cover" />
-                </div>
-              )}
+              {/* Company logo moved into attribute cards */}
               <div className="flex-1 overflow-y-auto p-6 sm:p-8 bg-gray-50">
                 {/* Dashboard layout */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  {/* Left column: overview cards */}
-                  <div className="space-y-6">
-                    <div className="bg-white rounded-xl border border-gray-200 p-5">
-                      <h2 className="text-xl font-bold text-gray-900 mb-2">{activeInterview.positionName}</h2>
-                      {activeInterview.companyName && (
-                        <p className="text-base text-gray-600 mb-3">{activeInterview.companyName}</p>
-                      )}
-                      {(activeInterview.location || activeInterview.workType) && (
-                        <p className="text-sm text-gray-700 mb-4">
-                          {activeInterview.location && (<><span>📍 {activeInterview.location}</span></>)}
-                          {activeInterview.location && activeInterview.workType && <span> • </span>}
-                          {activeInterview.workType && (<span>{activeInterview.workType}</span>)}
-                        </p>
-                      )}
-                      <div className="flex flex-wrap gap-2">
-                        <span className="inline-flex items-center rounded-full border-2 border-gray-300 bg-gray-100 px-3 py-1.5 text-sm font-semibold text-gray-800">
-                          {activeInterview.season} {activeInterview.year}
-                        </span>
-                        <span className="inline-flex items-center rounded-full border-2 border-gray-300 bg-gray-100 px-3 py-1.5 text-sm font-semibold text-gray-800">
-                          {activeInterview.positionType}
-                        </span>
-                        {activeInterview.offer && (
-                          <span className="inline-flex items-center rounded-full border-2 border-green-300 bg-green-100 px-3 py-1.5 text-sm font-bold text-green-800">
-                            ✓ Offer
-                          </span>
+                <div className="grid grid-cols-1 gap-6 min-h-[60vh] lg:flex lg:items-stretch">
+                  {/* Left column: attribute cards */}
+                  <div className="space-y-6 lg:basis-2/3 lg:flex lg:flex-col">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="bg-white rounded-xl border border-gray-200 p-4 sm:row-span-2 flex items-center justify-center">
+                        {activeInterview.companyImageUrl ? (
+                          <img 
+                            src={activeInterview.companyImageUrl} 
+                            alt={activeInterview.companyName || activeInterview.positionName}
+                            className="max-h-28 sm:max-h-32 object-contain"
+                          />
+                        ) : (
+                          <div className="text-lg font-semibold text-gray-900">—</div>
                         )}
-                        {activeInterview.offer && activeInterview.pay && (
-                          <span className="inline-flex items-center rounded-full border-2 border-blue-300 bg-blue-100 px-3 py-1.5 text-sm font-bold text-blue-800">
-                            💰 ${activeInterview.pay.toLocaleString()} {activeInterview.payType === 'Hourly' ? '/hr' : '/yr'} USD
-                          </span>
+                      </div>
+                      <div className="bg-white rounded-xl border border-gray-200 p-4">
+                        <div className="text-xs uppercase tracking-wide text-gray-500 mb-1">Title</div>
+                        <div className="text-lg font-semibold text-gray-900 break-words">{activeInterview.positionName}</div>
+                      </div>
+                      <div className="bg-white rounded-xl border border-gray-200 p-4">
+                        <div className="text-xs uppercase tracking-wide text-gray-500 mb-1">Company</div>
+                        <div className="text-lg font-semibold text-gray-900 break-words whitespace-normal leading-relaxed">{activeInterview.companyName || '—'}</div>
+                      </div>
+                      <div className="bg-white rounded-xl border border-gray-200 p-4">
+                        <div className="text-xs uppercase tracking-wide text-gray-500 mb-1">Level</div>
+                        <div className="text-lg font-semibold text-gray-900">{activeInterview.positionType}</div>
+                      </div>
+                      <div className="bg-white rounded-xl border border-gray-200 p-4">
+                        <div className="text-xs uppercase tracking-wide text-gray-500 mb-1">Season</div>
+                        <div className="text-lg font-semibold text-gray-900">{activeInterview.season}</div>
+                      </div>
+                      <div className="bg-white rounded-xl border border-gray-200 p-4">
+                        <div className="text-xs uppercase tracking-wide text-gray-500 mb-1">Year</div>
+                        <div className="text-lg font-semibold text-gray-900">{activeInterview.year}</div>
+                      </div>
+                      <div className="bg-white rounded-xl border border-gray-200 p-4">
+                        <div className="text-xs uppercase tracking-wide text-gray-500 mb-1">Location</div>
+                        <div className="text-lg font-semibold text-gray-900 break-words whitespace-normal leading-relaxed">
+                          {activeInterview.location || '—'}{activeInterview.workType ? ` • ${activeInterview.workType}` : ''}
+                        </div>
+                      </div>
+                      <div className="bg-white rounded-xl border border-gray-200 p-4 sm:col-span-2">
+                        <div className="text-xs uppercase tracking-wide text-gray-500 mb-1">Offer / Result</div>
+                        {activeInterview.offer ? (
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="inline-flex items-center rounded-full border-2 border-green-300 bg-green-100 px-3 py-1.5 text-sm font-bold text-green-800">✓ Offer</span>
+                            {activeInterview.pay && (
+                              <span className="inline-flex items-center rounded-full border-2 border-blue-300 bg-blue-100 px-3 py-1.5 text-sm font-bold text-blue-800">
+                                💰 ${activeInterview.pay.toLocaleString()} {activeInterview.payType === 'Hourly' ? '/hr' : '/yr'} USD
+                              </span>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="inline-flex items-center rounded-full border-2 border-red-300 bg-red-100 px-3 py-1.5 text-sm font-bold text-red-800">❌ Rejected</span>
+                            {activeInterview.round && (
+                              <span className="inline-flex items-center rounded-full border border-orange-300 bg-orange-50 px-3 py-1.5 text-sm font-semibold text-orange-800">Rejected at: {activeInterview.round}</span>
+                            )}
+                          </div>
                         )}
-                        {!activeInterview.offer && activeInterview.round && (
-                          <span className="inline-flex items-center rounded-full border-2 border-red-300 bg-red-100 px-3 py-1.5 text-sm font-bold text-red-800">
-                            ❌ Rejected at: {activeInterview.round}
-                          </span>
-                        )}
-                        {activeInterview.rating && (
-                          <span className="inline-flex items-center rounded-full border-2 border-yellow-300 bg-yellow-100 px-3 py-1.5 text-sm font-bold text-yellow-800">
-                            <span className="text-base mr-1">{'⭐'.repeat(activeInterview.rating)}{'☆'.repeat(5 - activeInterview.rating)}</span>
-                            <span>({activeInterview.rating}/5)</span>
-                          </span>
-                        )}
+                      </div>
+                      <div className="bg-white rounded-xl border border-gray-200 p-4 sm:col-span-2">
+                        <div className="text-xs uppercase tracking-wide text-gray-500 mb-1">Rating</div>
+                        <div className="text-lg font-semibold text-gray-900">
+                          {activeInterview.rating ? (
+                            <span>
+                              {'⭐'.repeat(activeInterview.rating)}{'☆'.repeat(5 - activeInterview.rating)} ({activeInterview.rating}/5)
+                            </span>
+                          ) : '—'}
+                        </div>
                       </div>
                     </div>
-
-                    {activeInterview.companyImageUrl && (
-                      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-                        <img src={activeInterview.companyImageUrl} alt={activeInterview.positionName} className="w-full h-48 object-cover" />
-                      </div>
-                    )}
                   </div>
 
                   {/* Right column: notes */}
-                  <div className="lg:col-span-2">
-                    <div className="bg-white rounded-xl border border-gray-200 p-5">
+                  <div className="lg:basis-1/3 flex flex-col">
+                    <div className="bg-white rounded-xl border border-gray-200 p-5 h-full flex flex-col flex-1">
                       <div className="flex items-center justify-between mb-3">
                         <h3 className="text-lg font-semibold text-gray-900">Interview Notes</h3>
                         <span className="text-xs text-gray-400">Private</span>
                       </div>
-                      {!isAuthenticated && (
+                      {!canViewNotes && (
                         <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 p-3 text-amber-800 text-sm">
                           Interview notes are private. You can request view access to the Interview Experiences page to see them.
                         </div>
                       )}
-                      {isAuthenticated && activeInterview.interviewNotes ? (
-                        <div className="prose prose-sm sm:prose-base max-w-none" data-color-mode="light">
-                          <MDEditor.Markdown source={activeInterview.interviewNotes} />
-                        </div>
-                      ) : (
-                        <p className="text-gray-500 text-sm">No notes available.</p>
+                      {canViewNotes && (
+                        activeInterview.interviewNotes ? (
+                          <div className="prose prose-sm sm:prose-base max-w-none flex-1 overflow-auto" data-color-mode="light">
+                            <MDEditor.Markdown source={activeInterview.interviewNotes} />
+                          </div>
+                        ) : (
+                          <p className="text-gray-500 text-sm">No notes available.</p>
+                        )
                       )}
                     </div>
                   </div>
@@ -1150,7 +1372,7 @@ const CareerLadder: React.FC = () => {
               </div>
 
                 <div className="p-5 sm:p-6 pt-4 border-t border-gray-200 flex items-center gap-3 flex-shrink-0">
-                  {isAuthenticated && (
+                  {canEdit && (
                     <button
                       onClick={() => handleEditClick(activeInterview)}
                       onMouseMove={handleMouseMove}
@@ -1174,6 +1396,126 @@ const CareerLadder: React.FC = () => {
                   >
                     Done
                   </button>
+                </div>
+              </div>
+            </div>
+        )}
+
+        {/* Access Requests Modal */}
+        {showAccessRequestsModal && (
+          <div 
+            className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6" 
+            onClick={() => setShowAccessRequestsModal(false)}
+          >
+            <div
+              className="max-w-2xl w-full max-h-[90vh] rounded-xl border border-gray-200 bg-white text-gray-900 shadow-2xl flex flex-col overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-5 sm:p-6 pb-4 border-b border-gray-200 flex-shrink-0">
+                <div className="flex items-start justify-between gap-4">
+                  <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">
+                    Interview Notes Access Requests
+                  </h2>
+                  <button
+                    onClick={() => setShowAccessRequestsModal(false)}
+                    onMouseMove={handleMouseMove}
+                    className="liquid-glass-button flex-shrink-0 px-3 py-1.5 text-sm font-medium text-gray-700"
+                    style={{ 
+                      background: 'rgba(255, 255, 255, 0.8)', 
+                      borderColor: 'rgba(255, 255, 255, 0.6)' 
+                    } as React.CSSProperties}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex-1 overflow-y-auto px-5 sm:px-6 py-4 sm:py-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <h3 className="text-base font-semibold text-gray-900 mb-4">Pending Requests</h3>
+                    {pendingRequests.length === 0 ? (
+                      <div className="text-center py-8 border border-gray-200 rounded-lg bg-white">
+                        <p className="text-gray-500">No pending requests.</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        {pendingRequests.map((request) => (
+                          <div
+                            key={request.id}
+                            className="bg-white rounded-lg border border-gray-200 p-5"
+                          >
+                            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                              <div className="min-w-0 flex-1">
+                                <p className="text-sm font-medium text-gray-900 mb-1 truncate">
+                                  {request.email}
+                                </p>
+                                <p className="text-xs text-gray-500">
+                                  Requested: {request.requestedAt?.toDate().toLocaleDateString()}
+                                </p>
+                              </div>
+                              <div className="flex items-center gap-3 flex-shrink-0">
+                                <button
+                                  onClick={() => handleApproveRequest(request)}
+                                  onMouseMove={handleMouseMove}
+                                  className="liquid-glass-button liquid-glass-green inline-flex items-center justify-center px-3.5 py-2 text-sm font-medium text-white"
+                                  style={{ 
+                                    background: 'rgba(22, 163, 74, 0.9)', 
+                                    borderColor: 'rgba(22, 163, 74, 0.6)' 
+                                  } as React.CSSProperties}
+                                >
+                                  Approve
+                                </button>
+                                <button
+                                  onClick={() => handleDenyRequest(request)}
+                                  onMouseMove={handleMouseMove}
+                                  className="liquid-glass-button liquid-glass-red inline-flex items-center justify-center px-3.5 py-2 text-sm font-medium text-white"
+                                  style={{ 
+                                    background: 'rgba(220, 38, 38, 0.9)', 
+                                    borderColor: 'rgba(220, 38, 38, 0.6)' 
+                                  } as React.CSSProperties}
+                                >
+                                  Deny
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <h3 className="text-base font-semibold text-gray-900 mb-4">Current Access</h3>
+                    {grants.length === 0 ? (
+                      <div className="text-center py-8 border border-gray-200 rounded-lg bg-white">
+                        <p className="text-gray-500">No active access grants.</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        {grants.map((g) => (
+                          <div key={g.id} className="bg-white rounded-lg border border-gray-200 p-5">
+                            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                              <div className="min-w-0 flex-1">
+                                <p className="text-sm font-medium text-gray-900 mb-1 truncate">{g.email}</p>
+                                <p className="text-xs text-gray-500">Granted: {g.grantedAt?.toDate?.().toLocaleDateString?.() || '-'}</p>
+                              </div>
+                              <button
+                                onClick={() => handleRevokeGrant(g.id)}
+                                onMouseMove={handleMouseMove}
+                                className="liquid-glass-button inline-flex items-center justify-center px-3.5 py-2 text-sm font-medium text-gray-700 flex-shrink-0"
+                                style={{ 
+                                  background: 'rgba(255, 255, 255, 0.95)', 
+                                  borderColor: 'rgba(209, 213, 219, 0.9)' 
+                                } as React.CSSProperties}
+                              >
+                                Revoke
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

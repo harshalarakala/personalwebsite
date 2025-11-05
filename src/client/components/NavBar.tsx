@@ -20,7 +20,8 @@ const NavBar: React.FC = () => {
     // Listen to authentication state changes
     useEffect(() => {
         const unsubscribe = onAuthChange((user) => {
-            if (user && isAuthorizedEditor(user)) {
+            // Authenticated means any Google user is signed in; editor rights are enforced per-page
+            if (user) {
                 setIsAuthenticated(true);
                 setUserData(user);
             } else {
@@ -34,11 +35,11 @@ const NavBar: React.FC = () => {
     const handleLoginSuccess = async () => {
         try {
             const result = await signInWithGoogle();
-            if (result && result.isAuthorized) {
-                setIsAuthenticated(true);
+            // Always reflect the signed-in user in the navbar; edit actions are still gated by isAuthorizedEditor
+            if (result && result.user) {
                 setUserData(result.user);
-            } else {
-                console.log("Unauthorized user attempted to login");
+                // Mark as signed in for any user; editing is gated elsewhere
+                setIsAuthenticated(true);
             }
         } catch (error) {
             console.error("Error during login:", error);
@@ -215,6 +216,15 @@ const NavBar: React.FC = () => {
                         }}
                     >
                         Skills
+                    </li>
+                    <li
+                        className={`${getTabClass('careerladder')} w-full lg:w-auto py-4 lg:py-0 lg:pl-4 lg:pr-8 transition-colors`}
+                        onClick={() => {
+                            dispatch({ type: 'SET_SECTION', payload: 'careerladder' });
+                            setIsOpen(false);
+                        }}
+                    >
+                        Interviews
                     </li>
                     <li
                         className={`${getTabClass('contact')} w-full lg:w-auto py-4 lg:py-0 lg:pl-4 lg:pr-4 transition-colors`}
