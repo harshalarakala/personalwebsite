@@ -50,13 +50,14 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 
 git checkout main
 npm run build
+rm -rf /tmp/build
 cp -r build /tmp/build
 git checkout gh-pages
 
-MANUALLY REMOVE EVERYTHING BUT CNAME, .gitignore, and .git
+MANUALLY REMOVE EVERYTHING BUT CNAME, .gitignore, and .git, README
 
 cp -r /tmp/build/* ./
-cp -r /tmp/build/. ./
 git add .
 git commit -m "Deploy latest build from main"
 git push origin gh-pages
+git checkout main
