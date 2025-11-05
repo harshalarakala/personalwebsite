@@ -1070,18 +1070,18 @@ const CareerLadder: React.FC = () => {
                   <img src={activeInterview.companyImageUrl} alt={activeInterview.positionName} className="h-full w-full object-cover" />
                 </div>
               )}
-              <div className="flex flex-col flex-1 overflow-hidden">
-                <div className="p-5 sm:p-6 pb-4 border-b border-gray-200 flex-shrink-0">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1 min-w-0">
-                      <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-2">
-                        {activeInterview.positionName}
-                      </h2>
+              <div className="flex-1 overflow-y-auto p-6 sm:p-8 bg-gray-50">
+                {/* Dashboard layout */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  {/* Left column: overview cards */}
+                  <div className="space-y-6">
+                    <div className="bg-white rounded-xl border border-gray-200 p-5">
+                      <h2 className="text-xl font-bold text-gray-900 mb-2">{activeInterview.positionName}</h2>
                       {activeInterview.companyName && (
-                        <p className="text-base text-gray-600 mb-2">{activeInterview.companyName}</p>
+                        <p className="text-base text-gray-600 mb-3">{activeInterview.companyName}</p>
                       )}
                       {(activeInterview.location || activeInterview.workType) && (
-                        <p className="text-base text-gray-600 mb-3">
+                        <p className="text-sm text-gray-700 mb-4">
                           {activeInterview.location && (<><span>📍 {activeInterview.location}</span></>)}
                           {activeInterview.location && activeInterview.workType && <span> • </span>}
                           {activeInterview.workType && (<span>{activeInterview.workType}</span>)}
@@ -1109,29 +1109,45 @@ const CareerLadder: React.FC = () => {
                             ❌ Rejected at: {activeInterview.round}
                           </span>
                         )}
+                        {activeInterview.rating && (
+                          <span className="inline-flex items-center rounded-full border-2 border-yellow-300 bg-yellow-100 px-3 py-1.5 text-sm font-bold text-yellow-800">
+                            <span className="text-base mr-1">{'⭐'.repeat(activeInterview.rating)}{'☆'.repeat(5 - activeInterview.rating)}</span>
+                            <span>({activeInterview.rating}/5)</span>
+                          </span>
+                        )}
                       </div>
                     </div>
-                    {/* Close button removed for a cleaner modal; click backdrop or Done */}
-                  </div>
-                </div>
 
-                {isAuthenticated && activeInterview.interviewNotes && (
-                  <div className="flex-1 overflow-y-auto px-5 sm:px-6 py-4 sm:py-5">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Interview Notes (Private)</h3>
-                    <div className="prose prose-sm sm:prose-base max-w-none" data-color-mode="light">
-                      <MDEditor.Markdown
-                        source={activeInterview.interviewNotes}
-                        style={{ background: 'transparent', color: '#374151' }}
-                      />
+                    {activeInterview.companyImageUrl && (
+                      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                        <img src={activeInterview.companyImageUrl} alt={activeInterview.positionName} className="w-full h-48 object-cover" />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Right column: notes */}
+                  <div className="lg:col-span-2">
+                    <div className="bg-white rounded-xl border border-gray-200 p-5">
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-lg font-semibold text-gray-900">Interview Notes</h3>
+                        <span className="text-xs text-gray-400">Private</span>
+                      </div>
+                      {!isAuthenticated && (
+                        <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 p-3 text-amber-800 text-sm">
+                          Interview notes are private. You can request view access to the Interview Experiences page to see them.
+                        </div>
+                      )}
+                      {isAuthenticated && activeInterview.interviewNotes ? (
+                        <div className="prose prose-sm sm:prose-base max-w-none" data-color-mode="light">
+                          <MDEditor.Markdown source={activeInterview.interviewNotes} />
+                        </div>
+                      ) : (
+                        <p className="text-gray-500 text-sm">No notes available.</p>
+                      )}
                     </div>
                   </div>
-                )}
-
-                {!isAuthenticated && (
-                  <div className="flex-1 overflow-y-auto px-5 sm:px-6 py-4 sm:py-5">
-                    <p className="text-gray-500">Interview notes are private and only visible to authorized users.</p>
-                  </div>
-                )}
+                </div>
+              </div>
 
                 <div className="p-5 sm:p-6 pt-4 border-t border-gray-200 flex items-center gap-3 flex-shrink-0">
                   {isAuthenticated && (
