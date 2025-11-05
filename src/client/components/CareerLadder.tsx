@@ -373,7 +373,9 @@ const CareerLadder: React.FC = () => {
   };
 
   const handleDeleteInterview = async (interview: Interview) => {
-    if (!window.confirm("Are you sure you want to delete this interview? This action cannot be undone.")) {
+    const confirmMessage = `Are you sure you want to delete this interview?\n\nPosition: ${interview.positionName}\nCompany: ${interview.companyName || 'N/A'}\nSeason: ${interview.season} ${interview.year}\n\nThis action cannot be undone.`;
+    
+    if (!window.confirm(confirmMessage)) {
       return;
     }
 
@@ -384,9 +386,10 @@ const CareerLadder: React.FC = () => {
         setActiveInterview(null);
         setIsEditing(false);
       }
+      toast.success(`Interview "${interview.positionName}" deleted successfully`);
     } catch (error) {
       console.error("Error deleting interview:", error);
-      alert("Failed to delete interview");
+      toast.error("Failed to delete interview");
     }
   };
 
