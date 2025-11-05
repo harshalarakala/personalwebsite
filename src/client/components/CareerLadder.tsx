@@ -22,7 +22,8 @@ import {
   checkAccessGrant,
   checkUserRequestStatus,
   getAccessGrants,
-  revokeAccessGrant
+  revokeAccessGrant,
+  manuallyGrantAccess
 } from '../services/interviewAccessService';
 import MDEditor from '@uiw/react-md-editor';
 import { toast } from 'react-toastify';
@@ -47,6 +48,9 @@ const CareerLadder: React.FC = () => {
   const [requestLoading, setRequestLoading] = useState(false);
   const [requestStatus, setRequestStatus] = useState<'none' | 'pending' | 'approved' | 'denied'>('none');
   const [grants, setGrants] = useState<{ id?: string; email: string; grantedAt?: any; grantedBy?: string }[]>([]);
+  const [emailSearch, setEmailSearch] = useState('');
+  const [newGrantEmail, setNewGrantEmail] = useState('');
+  const [isAddingGrant, setIsAddingGrant] = useState(false);
 
   // Edit form state
   const [editCompanyName, setEditCompanyName] = useState('');
@@ -429,6 +433,7 @@ const CareerLadder: React.FC = () => {
       // Refresh requests list
       const requests = await getPendingAccessRequests();
       setPendingRequests(requests);
+      toast.success(`Request denied for ${request.email}`);
     } catch (error) {
       console.error("Error denying request:", error);
       toast.error('Failed to deny request');
@@ -436,6 +441,7 @@ const CareerLadder: React.FC = () => {
   };
 
   const handleOpenRequestsModal = async () => {
+    setEmailSearch(''); // Clear search when opening
     setShowAccessRequestsModal(true);
     if (canEdit) {
       // Refresh requests when opening modal
@@ -460,6 +466,41 @@ const CareerLadder: React.FC = () => {
     } catch (error) {
       console.error('Error revoking grant:', error);
       toast.error('Failed to revoke access');
+    }
+  };
+
+  const handleAddGrant = async () => {
+    if (!newGrantEmail.trim() || !userData?.email) return;
+    
+    const email = newGrantEmail.trim().toLowerCase();
+    
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
+
+    // Check if already has access
+    const existingGrant = grants.find(g => g.email.toLowerCase() === email);
+    if (existingGrant) {
+      toast.info('This email already has access');
+      setNewGrantEmail('');
+      return;
+    }
+
+    setIsAddingGrant(true);
+    try {
+      await manuallyGrantAccess(email, userData.email);
+      toast.success(`Access granted to ${email}`);
+      setNewGrantEmail('');
+      const g = await getAccessGrants();
+      setGrants(g);
+    } catch (error: any) {
+      console.error('Error adding grant:', error);
+      toast.error('Failed to grant access: ' + (error.message || 'Unknown error'));
+    } finally {
+      setIsAddingGrant(false);
     }
   };
 
@@ -495,7 +536,7 @@ const CareerLadder: React.FC = () => {
                       borderColor: 'rgba(255, 255, 255, 0.6)' 
                     } as React.CSSProperties}
                   >
-                    View Requests {pendingRequests.length > 0 && `(${pendingRequests.length})`}
+                    View Requests {pendingRequests.length > 0 && `(${pendingRequests.length})`} or Manage Access
                   </button>
                   <button
                     onClick={handleCreateNew}
@@ -1408,11 +1449,11 @@ const CareerLadder: React.FC = () => {
             onClick={() => setShowAccessRequestsModal(false)}
           >
             <div
-              className="max-w-2xl w-full max-h-[90vh] rounded-xl border border-gray-200 bg-white text-gray-900 shadow-2xl flex flex-col overflow-hidden"
+              className="max-w-5xl w-full max-h-[90vh] rounded-xl border border-gray-200 bg-white text-gray-900 shadow-2xl flex flex-col overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="p-5 sm:p-6 pb-4 border-b border-gray-200 flex-shrink-0">
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start justify-between gap-4 mb-4">
                   <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">
                     Interview Notes Access Requests
                   </h2>
@@ -1428,19 +1469,49 @@ const CareerLadder: React.FC = () => {
                     Close
                   </button>
                 </div>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="text"
+                    value={emailSearch}
+                    onChange={(e) => setEmailSearch(e.target.value)}
+                    placeholder="Search by email..."
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    onMouseMove={handleMouseMove}
+                  />
+                  {emailSearch && (
+                    <button
+                      onClick={() => setEmailSearch('')}
+                      onMouseMove={handleMouseMove}
+                      className="liquid-glass-button px-3 py-2 text-sm font-medium text-gray-700"
+                      style={{ 
+                        background: 'rgba(255, 255, 255, 0.8)', 
+                        borderColor: 'rgba(255, 255, 255, 0.6)' 
+                      } as React.CSSProperties}
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
               </div>
 
               <div className="flex-1 overflow-y-auto px-5 sm:px-6 py-4 sm:py-5">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <h3 className="text-base font-semibold text-gray-900 mb-4">Pending Requests</h3>
+                    <h3 className="text-base font-semibold text-gray-900 mb-4">
+                      Pending Requests
+                      {emailSearch && (
+                        <span className="text-sm font-normal text-gray-500 ml-2">
+                          ({pendingRequests.filter(r => r.email.toLowerCase().includes(emailSearch.toLowerCase())).length} shown)
+                        </span>
+                      )}
+                    </h3>
                     {pendingRequests.length === 0 ? (
                       <div className="text-center py-8 border border-gray-200 rounded-lg bg-white">
                         <p className="text-gray-500">No pending requests.</p>
                       </div>
                     ) : (
                       <div className="space-y-4">
-                        {pendingRequests.map((request) => (
+                        {pendingRequests.filter(r => !emailSearch || r.email.toLowerCase().includes(emailSearch.toLowerCase())).map((request) => (
                           <div
                             key={request.id}
                             className="bg-white rounded-lg border border-gray-200 p-5"
@@ -1485,14 +1556,52 @@ const CareerLadder: React.FC = () => {
                     )}
                   </div>
                   <div>
-                    <h3 className="text-base font-semibold text-gray-900 mb-4">Current Access</h3>
+                    <h3 className="text-base font-semibold text-gray-900 mb-4">
+                      Current Access
+                      {emailSearch && (
+                        <span className="text-sm font-normal text-gray-500 ml-2">
+                          ({grants.filter(g => g.email.toLowerCase().includes(emailSearch.toLowerCase())).length} shown)
+                        </span>
+                      )}
+                    </h3>
+                    <div className="mb-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Manually Grant Access
+                      </label>
+                      <div className="flex gap-2">
+                        <input
+                          type="email"
+                          value={newGrantEmail}
+                          onChange={(e) => setNewGrantEmail(e.target.value)}
+                          onKeyPress={(e) => e.key === 'Enter' && handleAddGrant()}
+                          placeholder="Enter email address"
+                          className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          disabled={isAddingGrant}
+                        />
+                        <button
+                          onClick={handleAddGrant}
+                          disabled={isAddingGrant || !newGrantEmail.trim()}
+                          onMouseMove={handleMouseMove}
+                          className="liquid-glass-button px-4 py-2 text-sm font-medium text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                          style={{ 
+                            background: 'rgba(99, 102, 241, 0.9)', 
+                            borderColor: 'rgba(99, 102, 241, 0.6)' 
+                          } as React.CSSProperties}
+                        >
+                          {isAddingGrant ? 'Adding...' : 'Add'}
+                        </button>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-2">
+                        No email notification will be sent to the recipient
+                      </p>
+                    </div>
                     {grants.length === 0 ? (
                       <div className="text-center py-8 border border-gray-200 rounded-lg bg-white">
                         <p className="text-gray-500">No active access grants.</p>
                       </div>
                     ) : (
                       <div className="space-y-4">
-                        {grants.map((g) => (
+                        {grants.filter(g => !emailSearch || g.email.toLowerCase().includes(emailSearch.toLowerCase())).map((g) => (
                           <div key={g.id} className="bg-white rounded-lg border border-gray-200 p-5">
                             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                               <div className="min-w-0 flex-1">

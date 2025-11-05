@@ -63,6 +63,10 @@ export const submitAccessRequest = async (email: string): Promise<string> => {
     };
     
     const docRef = await addDoc(accessRequestsCollection, newRequest);
+    
+    // Notify owner of new request
+    await notifyOwnerOfRequest(email);
+    
     return docRef.id;
   } catch (error) {
     console.error("Error submitting access request:", error);
@@ -210,6 +214,30 @@ export const revokeAccessGrant = async (grantId: string): Promise<void> => {
   }
 };
 
+// Manually grant access (no email notification to recipient)
+export const manuallyGrantAccess = async (email: string, granterEmail: string): Promise<void> => {
+  try {
+    // Check if access grant already exists
+    const existingGrantsQuery = query(
+      accessGrantsCollection,
+      where("email", "==", email)
+    );
+    const existingGrants = await getDocs(existingGrantsQuery);
+    
+    if (existingGrants.empty) {
+      // Create access grant
+      await addDoc(accessGrantsCollection, {
+        email,
+        grantedAt: Timestamp.now(),
+        grantedBy: granterEmail
+      });
+    }
+  } catch (error) {
+    console.error('Error manually granting access:', error);
+    throw error;
+  }
+};
+
 // Email notifications (using EmailJS like Contact form)
 const EMAILJS_SERVICE_ID = 'service_agvp2sz';
 const EMAILJS_TEMPLATE_ID = 'template_b0trd35';
@@ -228,6 +256,21 @@ export const sendAccessEmail = async (toEmail: string, status: 'approved' | 'den
     await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams, EMAILJS_PUBLIC_KEY);
   } catch (error) {
     console.error('Failed to send access email:', error);
+  }
+};
+
+// Notify owner when someone requests access
+const notifyOwnerOfRequest = async (requesterEmail: string): Promise<void> => {
+  const ownerEmail = 'harakala.career@gmail.com';
+  try {
+    const templateParams: any = {
+      to_email: ownerEmail,
+      from_name: 'Interview Access System',
+      message: `A user has requested access to your interview notes.\n\nRequester Email: ${requesterEmail}\n\nPlease review the request in the Interview Experiences admin panel.`
+    };
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams, EMAILJS_PUBLIC_KEY);
+  } catch (error) {
+    console.error('Failed to notify owner of request:', error);
   }
 };
 
