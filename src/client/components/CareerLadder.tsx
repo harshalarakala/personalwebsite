@@ -1080,49 +1080,38 @@ const CareerLadder: React.FC = () => {
                       {activeInterview.companyName && (
                         <p className="text-base text-gray-600 mb-2">{activeInterview.companyName}</p>
                       )}
-                      {activeInterview.location && (
-                        <p className="text-base text-gray-500 mb-2">📍 {activeInterview.location}</p>
-                      )}
-                      {activeInterview.workType && (
-                        <span className="inline-flex items-center rounded-full border border-purple-200 bg-purple-50 px-2.5 py-0.5 text-xs text-purple-700 mb-2">
-                          {activeInterview.workType}
-                        </span>
+                      {(activeInterview.location || activeInterview.workType) && (
+                        <p className="text-base text-gray-600 mb-3">
+                          {activeInterview.location && (<><span>📍 {activeInterview.location}</span></>)}
+                          {activeInterview.location && activeInterview.workType && <span> • </span>}
+                          {activeInterview.workType && (<span>{activeInterview.workType}</span>)}
+                        </p>
                       )}
                       <div className="flex flex-wrap gap-2">
-                        <span className="inline-flex items-center rounded-full border border-gray-200 bg-gray-50 px-2.5 py-0.5 text-xs text-gray-600">
+                        <span className="inline-flex items-center rounded-full border-2 border-gray-300 bg-gray-100 px-3 py-1.5 text-sm font-semibold text-gray-800">
                           {activeInterview.season} {activeInterview.year}
                         </span>
-                        <span className="inline-flex items-center rounded-full border border-gray-200 bg-gray-50 px-2.5 py-0.5 text-xs text-gray-600">
+                        <span className="inline-flex items-center rounded-full border-2 border-gray-300 bg-gray-100 px-3 py-1.5 text-sm font-semibold text-gray-800">
                           {activeInterview.positionType}
                         </span>
                         {activeInterview.offer && (
-                          <span className="inline-flex items-center rounded-full border border-green-200 bg-green-50 px-2.5 py-0.5 text-xs text-green-700 font-semibold">
-                            Offer
+                          <span className="inline-flex items-center rounded-full border-2 border-green-300 bg-green-100 px-3 py-1.5 text-sm font-bold text-green-800">
+                            ✓ Offer
                           </span>
                         )}
                         {activeInterview.offer && activeInterview.pay && (
-                          <span className="inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-2.5 py-0.5 text-xs text-blue-700">
-                            ${activeInterview.pay.toLocaleString()} {activeInterview.payType === 'Hourly' ? '/hr' : '/yr'} USD
+                          <span className="inline-flex items-center rounded-full border-2 border-blue-300 bg-blue-100 px-3 py-1.5 text-sm font-bold text-blue-800">
+                            💰 ${activeInterview.pay.toLocaleString()} {activeInterview.payType === 'Hourly' ? '/hr' : '/yr'} USD
                           </span>
                         )}
                         {!activeInterview.offer && activeInterview.round && (
-                          <span className="inline-flex items-center rounded-full border border-orange-200 bg-orange-50 px-2.5 py-0.5 text-xs text-orange-700">
-                            {activeInterview.round}
+                          <span className="inline-flex items-center rounded-full border-2 border-red-300 bg-red-100 px-3 py-1.5 text-sm font-bold text-red-800">
+                            ❌ Rejected at: {activeInterview.round}
                           </span>
                         )}
                       </div>
                     </div>
-                    <button
-                      onClick={() => setActiveInterview(null)}
-                      onMouseMove={handleMouseMove}
-                      className="liquid-glass-button flex-shrink-0 px-3 py-1.5 text-sm font-medium text-gray-700"
-                      style={{ 
-                        background: 'rgba(255, 255, 255, 0.8)', 
-                        borderColor: 'rgba(255, 255, 255, 0.6)' 
-                      } as React.CSSProperties}
-                    >
-                      Close
-                    </button>
+                    {/* Close button removed for a cleaner modal; click backdrop or Done */}
                   </div>
                 </div>
 
