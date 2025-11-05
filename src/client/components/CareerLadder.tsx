@@ -536,7 +536,7 @@ const CareerLadder: React.FC = () => {
                       borderColor: 'rgba(255, 255, 255, 0.6)' 
                     } as React.CSSProperties}
                   >
-                    View Requests {pendingRequests.length > 0 && `(${pendingRequests.length})`} or Manage Access
+                    Manage Access or View Requests {pendingRequests.length > 0 && `(${pendingRequests.length})`}
                   </button>
                   <button
                     onClick={handleCreateNew}
